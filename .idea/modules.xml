@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MDW.iml" filepath="$PROJECT_DIR$/MDW.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MoneyConfig.iml" filepath="$PROJECT_DIR$/MoneyConfig.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MoneyConfig/MoneyConfig-MoneyConfig.iml" filepath="$PROJECT_DIR$/MoneyConfig/MoneyConfig-MoneyConfig.iml" />
+    </modules>
+  </component>
+</project>
+

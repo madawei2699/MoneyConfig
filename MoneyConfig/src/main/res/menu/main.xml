@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+        <item 
+        android:id="@+id/fund" 
+        android:title="@string/fund"
+        android:icon="@drawable/fund"  
+        android:showAsAction="always"/>
+        
+        <item 
+        android:id="@+id/stock" 
+        android:title="@string/stock"
+        android:icon="@drawable/stock"  
+        android:showAsAction="always"/>
+        
+        <item 
+        android:id="@+id/proportion" 
+        android:title="@string/proportion"
+        android:icon="@drawable/proportion"  
+        android:showAsAction="always"/>
+        
+        <item 
+        android:id="@+id/config" 
+        android:title="@string/config"
+        android:icon="@drawable/config"  
+        android:showAsAction="always"/>
+
+</menu>

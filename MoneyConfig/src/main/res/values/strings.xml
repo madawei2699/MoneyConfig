@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">资产配置</string>
+    <string name="fund">基金</string>
+    <string name="addFund">添加基金</string>
+    <string name="fundCode">基金代码</string>
+    <string name="stock">股票</string>
+    <string name="proportion">资产比例</string>
+    <string name="config">设置</string>
+    <string name="add">添加</string>
+    <string name="fund_name">名称</string>
+    <string name="fund_price">今日</string>
+    <string name="fund_updown">涨跌</string>
+    <string name="fund_scope">涨跌幅</string>
+    <string name="fund_date">日期</string>
+    <string name="fund_poundage">手续费</string>
+    <string name="fund_capital">本金</string>
+    <string name="fund_sum">累计</string>
+    <string name="fund_code">代码</string>
+    <string name="stock_name">名称</string>
+    <string name="stock_price">现价</string>
+    <string name="stock_updown">涨跌</string>
+    <string name="stock_updownscope">涨跌幅</string>
+    <string name="stock_date">日期</string>
+    <string name="stock_capital">本金</string>
+    <string name="stock_tax">税收</string>
+    <string name="title_addFund">添加基金</string>
+    <string name="ok">确定</string>
+
+    <string name="editFundCodeHits">输入开放式基金代码[OF]</string>
+    <string name="editFundMoney">输入整数，单位：元</string>
+    <string name="textViewFundMoney">购买金额</string>
+    <string name="editFundInsuranceRate">购买费率，不用输入%</string>
+    
+    <string name="textViewFundAmount">购买数量</string>
+    <string name="editFundAmount">输入购买数量</string>
+    
+    <string name="textViewFundDate">购买日期</string>
+    <string name="addDate">日期</string>
+    <string name="addTime">时间</string>
+
+    <color name="black">#000000</color>
+
+</resources>

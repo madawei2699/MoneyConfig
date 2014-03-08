@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/AddFundActivity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/DataService.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/DatabaseHelper.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/FundFragment.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/InterceptScrollContainer.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/MainActivity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/MyApplication.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/MyHScrollView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/StockFragment.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/Utils.java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>
+
