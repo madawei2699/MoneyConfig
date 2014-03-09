@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:gravity="center_vertical"
-        android:text="@string/fund_code" />
+        android:text="@string/fund_name" />
 
     <com.mdw.moneyconfig.InterceptScrollContainer
         android:id="@+id/fund_scroollContainter"
@@ -38,22 +38,12 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/fund_textView2"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:textSize="20sp"
-                    android:gravity="center_vertical"
-                    android:text="@string/fund_name"/>
-
-                <TextView
                     android:id="@+id/fund_textView3"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:gravity="center_vertical"
                     android:text="@string/fund_price"/>
 
@@ -63,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:gravity="center_vertical"
                     android:text="@string/fund_updown"/>
 
@@ -73,17 +63,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:gravity="center_vertical"
                     android:text="@string/fund_scope"/>
 
                 <TextView
                     android:id="@+id/fund_textView6"
-                    android:layout_width="80dp"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:gravity="center_vertical"
                     android:text="@string/fund_date"/>
 
@@ -93,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:gravity="center_vertical"
                     android:text="@string/fund_poundage"/>
                 
@@ -103,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:gravity="center_vertical"
                     android:text="@string/fund_capital"/>
             </LinearLayout>

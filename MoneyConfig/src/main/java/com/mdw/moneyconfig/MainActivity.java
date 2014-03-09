@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
 					Intent addFundIntent = new Intent();
                     addFundIntent.setClass(MainActivity.this,AddFundActivity.class);
                     startActivity(addFundIntent);
-                    //MainActivity.this.finish();
+                    finish();
 				}else if(titleText.getText().equals(getResources().getString(R.string.stock))){
 					
 				}
@@ -247,8 +247,6 @@ public class MainActivity extends Activity {
 			item.setIcon(R.drawable.config_pressed);
 		}
         return super.onPrepareOptionsMenu(menu);  
-    }  
-	
-	
+    }
 
 }

@@ -10,7 +10,7 @@
     <string name="config">设置</string>
     <string name="add">添加</string>
     <string name="fund_name">名称</string>
-    <string name="fund_price">今日</string>
+    <string name="fund_price">净值</string>
     <string name="fund_updown">涨跌</string>
     <string name="fund_scope">涨跌幅</string>
     <string name="fund_date">日期</string>
@@ -28,7 +28,7 @@
     <string name="title_addFund">添加基金</string>
     <string name="ok">确定</string>
 
-    <string name="editFundCodeHits">输入开放式基金代码[OF]</string>
+    <string name="editFundCodeHits">输入开放式基金代码</string>
     <string name="editFundMoney">输入整数，单位：元</string>
     <string name="textViewFundMoney">购买金额</string>
     <string name="editFundInsuranceRate">购买费率，不用输入%</string>
@@ -41,5 +41,7 @@
     <string name="addTime">时间</string>
 
     <color name="black">#000000</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#008000</color>
 
 </resources>

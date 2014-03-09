@@ -38,9 +38,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
 		//创建基金数据表
-		db.execSQL("create table fund(fundCode varchar(10),name varchar(10)," +
-				"price varchar(10),updown varchar(10),scope varchar(10)," +
-				"date varchar(10),poundage varchar(10),capital varchar(10))");
+		db.execSQL("create table fund(_id integer primary key autoincrement,fundCode varchar(10) not null unique," +
+                "name varchar(10),price varchar(10),updown varchar(10),scope varchar(10)," +
+				"date varchar(10),poundage varchar(10) default '0',capital varchar(10),buyMoney varchar(10)," +
+                "buyAmount varchar(10),fundRate varchar(10),fundInsuranceType INTEGER)");
 	}
 
 	@Override

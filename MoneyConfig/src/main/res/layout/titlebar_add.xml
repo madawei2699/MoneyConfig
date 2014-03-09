@@ -13,6 +13,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_addFund"
                 android:textSize="25sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_gravity="center"/>
 
 </LinearLayout>

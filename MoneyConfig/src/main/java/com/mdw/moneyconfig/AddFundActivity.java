@@ -1,13 +1,19 @@
 package com.mdw.moneyconfig;
 
 import android.app.ActionBar;
+import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -18,14 +24,22 @@ import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import static android.os.SystemClock.sleep;
 
 public class AddFundActivity extends FragmentActivity implements OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";
-	
-	/**
+
+    /**
+     * 进度条
+     */
+    private ProgressDialog pd;
+
+    /**
 	 * 基金收费模式：前端、后端
 	 */
 	private Spinner fundInsuranceRateSpinner; 
@@ -48,12 +62,12 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
     /**
      * 购买金额
      */
-    private String buyMoney;
+    private String buyMoney="";
 
     /**
      * 购买数量
      */
-    private String buyAmount;
+    private String buyAmount="";
 
     /**
      * 收费模式,0-前端,1-后端
@@ -63,7 +77,7 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
     /**
      * 费率
      */
-    private String fundRate;
+    private String fundRate="";
 
     /**
      * 购买日期
@@ -74,11 +88,28 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
      * 购买时间
      */
     private String buyTime;
+
+    /**
+     * 日期按钮
+     */
+    Button buttonDate;
+
+    // 创建ContentValues对象
+    ContentValues values;
 	
 	//基金收费模式
     private String[] fundInsuranceRate = new String[] {"前端","后端"};
 
-	@Override
+    private Handler handler = new Handler() {
+
+        // 处理子线程给我们发送的消息
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            pd.dismiss();// 关闭ProgressDialog
+        };
+    };
+
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_fund_layout);
@@ -99,6 +130,14 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
         final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY) ,
                 calendar.get(Calendar.MINUTE), false, false);
+        // 初始化日期按钮的值
+        buttonDate = (Button)findViewById(R.id.buttonDate);
+        // 设置日期格式
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = sDateFormat.format(new java.util.Date());
+        buttonDate.setText(date);
+        // 初始化购买日期值
+        this.buyDate = date;
 
         findViewById(R.id.buttonDate).setOnClickListener(new OnClickListener() {
 
@@ -135,7 +174,8 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         EditText editFundMoney = (EditText) findViewById(R.id.editFundMoney);
         EditText editFundAmount = (EditText) findViewById(R.id.editFundAmount);
         EditText editFundInsuranceRate = (EditText) findViewById(R.id.editFundInsuranceRate);
-        fundCode = editFundCode.getText().toString();
+        // 开放式基金前缀为"of"
+        fundCode = "of" + editFundCode.getText().toString();
         buyMoney = editFundMoney.getText().toString();
         buyAmount = editFundAmount.getText().toString();
         fundRate = editFundInsuranceRate.getText().toString();
@@ -182,6 +222,8 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         buyDate = Integer.toString(year)+"-"+Integer.toString(month+1)+"-"+Integer.toString(day);
+        // 设置日期按钮值
+        buttonDate.setText(buyDate);
     }
 
     @Override
@@ -202,7 +244,27 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         switch (item.getItemId()) {
             case R.id.saveFund:
                 getEditValue();
-                this.finish();
+                // 用正则表达式判断输入基金代码是否正确
+                if(fundCode.matches("^of\\d{6,6}")){
+                    wrapData();
+                    // 初始化数据处理类对象
+                    DataService ds = new DataService(values,handler);
+                    /* 显示ProgressDialog */
+                    pd = ProgressDialog.show(AddFundActivity.this, "添加基金", "加载中，请稍后……");
+                    // 使用HandlerThread线程保存数据
+//                    HandlerThread mHandlerThread = new HandlerThread("ds", 1);
+//                    mHandlerThread.start();
+//                    Handler mHandler = new Handler(mHandlerThread.getLooper());
+//                    mHandler.post(ds);
+                    // 调用多线程执行数据抓取存储
+                    new Thread(ds).start();
+                }
+                // 等待线程添加数据
+                // sleep(3000);
+                Intent MainActivityIntent = new Intent();
+                MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
+                startActivity(MainActivityIntent);
+                finish();
                 break;
             default:
                 break;
@@ -215,6 +277,31 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         // TO DO
 
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * 将要保存数据封装
+     * @return
+     */
+    public void wrapData(){
+        values = new ContentValues();
+        values.put("fundCode", fundCode);
+        values.put("fundInsuranceType", fundInsuranceType);
+        if("".equals(buyMoney)){
+            values.put("buyMoney", "0");
+        }else{
+            values.put("buyMoney", buyMoney);
+        }
+        if("".equals(buyAmount)){
+            values.put("buyAmount", "0");
+        }else{
+            values.put("buyAmount", buyAmount);
+        }
+        if("".equals(fundRate)){
+            values.put("fundRate", "0");
+        }else{
+            values.put("fundRate", fundRate);
+        }
     }
 
 }

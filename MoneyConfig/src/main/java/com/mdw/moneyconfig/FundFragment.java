@@ -27,8 +27,10 @@ public class FundFragment extends Fragment {
 	MyAdapter myAdapter;
 	RelativeLayout mHead;
 	LinearLayout main;
+    Cursor cursor;
+    int dbCount;
 
-	@Override
+    @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View fundLayout = inflater.inflate(R.layout.fund_layout,
@@ -42,8 +44,31 @@ public class FundFragment extends Fragment {
 		mListView1 = (ListView) fundLayout.findViewById(R.id.fund_listView1);
 		mListView1.setOnTouchListener(new ListViewAndHeadViewTouchLinstener());
 
-		myAdapter = new MyAdapter(this.getActivity(), R.layout.item_fund);
+        //从数据库取基金数据
+        DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(),
+                "moneyconfig_db", 2);
+        // 得到一个只读的SQLiteDatabase对象
+        SQLiteDatabase sqliteDatabase = dbHelper.getReadableDatabase();
+        // 调用SQLiteDatabase对象的query方法进行查询，返回一个Cursor对象：由数据库查询返回的结果集对象
+        // 第一个参数String：表名
+        // 第二个参数String[]:要查询的列名
+        // 第三个参数String：查询条件
+        // 第四个参数String[]：查询条件的参数
+        // 第五个参数String:对查询的结果进行分组
+        // 第六个参数String：对分组的结果进行限制
+        // 第七个参数String：对查询的结果进行排序
+        cursor = sqliteDatabase.query("fund", new String[] { "fundCode",
+                "name", "price", "updown", "scope", "date", "poundage", "buyMoney" },
+                null, null, null, null, null);
+
+        this.dbCount = cursor.getCount();
+
+        // 关闭数据库
+        sqliteDatabase.close();
+
+        myAdapter = new MyAdapter(this.getActivity(), R.layout.item_fund);
 		mListView1.setAdapter(myAdapter);
+
 		return fundLayout;
 	}
 	
@@ -64,28 +89,16 @@ public class FundFragment extends Fragment {
 
 		int id_row_layout;
 		LayoutInflater mInflater;
-        int count;
 		public MyAdapter(Context fundFragment, int id_row_layout) {
 			super();
 			this.id_row_layout = id_row_layout;
 			mInflater = LayoutInflater.from(fundFragment);
-			//从数据库取基金数据条数
-            DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(),  
-                    "moneyconfig_db", 2);  
-            // 得到一个只读的SQLiteDatabase对象  
-            SQLiteDatabase sqliteDatabase = dbHelper.getReadableDatabase();
-            //获取基金表记录数
-            Cursor mCount = sqliteDatabase.rawQuery("select count(*) from fund", null);
-            mCount.moveToFirst();
-            this.count = mCount.getInt(0);
-            mCount.close();
-            sqliteDatabase.close();
 		}
 
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return count;
+			return dbCount;
 		}
 
 		@Override
@@ -114,8 +127,6 @@ public class FundFragment extends Fragment {
 					holder.scrollView = scrollView1;
 					holder.fundCode = (TextView) convertView
 							.findViewById(R.id.fund_textView1);
-					holder.name = (TextView) convertView
-							.findViewById(R.id.fund_textView2);
 					holder.price = (TextView) convertView
 							.findViewById(R.id.fund_textView3);
 					holder.updown = (TextView) convertView
@@ -141,36 +152,41 @@ public class FundFragment extends Fragment {
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			//从数据库取基金数据
-            DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(),  
-                    "moneyconfig_db", 2);  
-            // 得到一个只读的SQLiteDatabase对象  
-            SQLiteDatabase sqliteDatabase = dbHelper.getReadableDatabase();  
-            // 调用SQLiteDatabase对象的query方法进行查询，返回一个Cursor对象：由数据库查询返回的结果集对象  
-            // 第一个参数String：表名  
-            // 第二个参数String[]:要查询的列名  
-            // 第三个参数String：查询条件  
-            // 第四个参数String[]：查询条件的参数  
-            // 第五个参数String:对查询的结果进行分组  
-            // 第六个参数String：对分组的结果进行限制  
-            // 第七个参数String：对查询的结果进行排序  
-            Cursor cursor = sqliteDatabase.query("fund", new String[] { "fundCode",  
-                    "name", "price", "updown", "scope", "date", "poundage", "capital" }, 
-                    null, null, null, null, null); 
-            // 将光标移动到下一行，从而判断该结果集是否还有下一条数据，如果有则返回true，没有则返回false  
-            while (cursor.moveToNext()) {  
-                holder.fundCode.setText(cursor.getString(cursor.getColumnIndex("fundCode")));
-                holder.name.setText(cursor.getString(cursor.getColumnIndex("name")));
-                holder.price.setText(cursor.getString(cursor.getColumnIndex("price")));
-                holder.updown.setText(cursor.getString(cursor.getColumnIndex("updown")));
-                holder.scope.setText(cursor.getString(cursor.getColumnIndex("scope")));
-                holder.date.setText(cursor.getString(cursor.getColumnIndex("date")));
-                holder.poundage.setText(cursor.getString(cursor.getColumnIndex("poundage")));
-                holder.capital.setText(cursor.getString(cursor.getColumnIndex("capital")));
+            // 将光标移动指定位置
+            cursor.moveToPosition(position);
+            // 不显示"of"
+            String fundCode = cursor.getString(cursor.getColumnIndex("fundCode")).replaceAll("of", "");
+            // 只显示五个汉字名称
+            String fundName = cursor.getString(cursor.getColumnIndex("name"));
+            if(fundName.length()>5){
+                fundName = fundName.substring(0,5);
             }
-            //关闭游标
-            cursor.close();
-            sqliteDatabase.close();
+            // 基金名称和代码显示为一列
+            holder.fundCode.setText(fundName +"\n" + fundCode);
+            holder.price.setText(cursor.getString(cursor.getColumnIndex("price")));
+            holder.updown.setText(cursor.getString(cursor.getColumnIndex("updown")));
+            holder.scope.setText(cursor.getString(cursor.getColumnIndex("scope")));
+            holder.date.setText(cursor.getString(cursor.getColumnIndex("date")));
+            holder.poundage.setText(cursor.getString(cursor.getColumnIndex("poundage")));
+            holder.capital.setText(cursor.getString(cursor.getColumnIndex("buyMoney")));
+            // 设置字体大小
+            holder.fundCode.setTextSize(15);
+            holder.price.setTextSize(20);
+            holder.updown.setTextSize(20);
+            holder.scope.setTextSize(20);
+            holder.date.setTextSize(15);
+            holder.poundage.setTextSize(20);
+            holder.capital.setTextSize(20);
+            // 基金涨幅大于0，则颜色设置为红色，否则为绿色
+            if(Double.parseDouble(cursor.getString(cursor.getColumnIndex("updown")))>0){
+                holder.price.setTextColor(getResources().getColor(R.color.red));
+                holder.updown.setTextColor(getResources().getColor(R.color.red));
+                holder.scope.setTextColor(getResources().getColor(R.color.red));
+            }else {
+                holder.price.setTextColor(getResources().getColor(R.color.green));
+                holder.updown.setTextColor(getResources().getColor(R.color.green));
+                holder.scope.setTextColor(getResources().getColor(R.color.green));
+            }
 			return convertView;
 		}
 
@@ -189,7 +205,6 @@ public class FundFragment extends Fragment {
 
 		class ViewHolder {
 			TextView fundCode;
-			TextView name;
 			TextView price;
 			TextView updown;
 			TextView scope;

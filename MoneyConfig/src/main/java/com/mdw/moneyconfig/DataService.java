@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -21,6 +22,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.http.AndroidHttpClient;
+import android.os.Message;
 
 import com.mdw.moneyconfig.Utils;
 
@@ -32,6 +34,8 @@ import com.mdw.moneyconfig.Utils;
 
 public class DataService implements Runnable {
 
+    private android.os.Handler handler;
+
 	//基金抓取数据
     private String []fundData;
     //股票抓取数据
@@ -42,6 +46,8 @@ public class DataService implements Runnable {
     private String stockCode="";
     //是否更新股票基金数据
     private boolean updateOrNot=false;
+    // 创建ContentValues对象
+    ContentValues values = new ContentValues();
     // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的  
     DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
     
@@ -53,6 +59,20 @@ public class DataService implements Runnable {
     		this.stockCode = code;
     	}
     }
+
+    public DataService(ContentValues values) {
+        //如果代码包含of则为开放式基金，如果包含sz或sh则为股票
+        this.values = values;
+        this.fundCode = values.getAsString("fundCode");
+    }
+
+    public DataService(ContentValues values, android.os.Handler handler) {
+        //如果代码包含of则为开放式基金，如果包含sz或sh则为股票
+        this.values = values;
+        this.fundCode = values.getAsString("fundCode");
+        this.handler = handler;
+    }
+
     //更新基金股票数据
     public DataService(){
     	this.updateOrNot=true;
@@ -60,7 +80,8 @@ public class DataService implements Runnable {
 
     @Override
     public void run() {
-    	if(!fundCode.equals("")){
+
+        if(!fundCode.equals("")){
     		//基金代码不为空，则插入或更新基金数据
     		getAndStoreFundData(fundCode);
     	}else if(!stockCode.equals("")){
@@ -76,7 +97,10 @@ public class DataService implements Runnable {
                 }
             }
     	}
-    	
+        if(handler != null){
+            handler.sendEmptyMessage(0);// 执行耗时的方法之后发送消给handler
+        }
+
     }
     /**
      * 发送Http请求到Web站点
@@ -167,19 +191,18 @@ public class DataService implements Runnable {
             Map<String, String> params = new HashMap<String, String>();
             String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
             //检查数据是否为空
-            String data = result.split("=")[1].replaceAll("\"", "").replaceAll(";", "");
+            String data = result.split("=")[1].replaceAll("\"", "").replaceAll(";", "").replaceAll("\\n","");
             if(!data.equals(""))
             {
             	fundData = data.split(",");
-                // 创建ContentValues对象  
-                ContentValues values = new ContentValues();  
+
                 // 向该对象中插入键值对，其中键是列名，值是希望插入到这一列的值，值必须和数据库当中的数据类型一致  
-                values.put("fundCode", code);  
-                values.put("name", fundData[0]);  
-                values.put("price", fundData[1]);  
-                values.put("updown", Float.toString(Float.parseFloat(fundData[1])-Float.parseFloat(fundData[3])));  
+                values.put("price", fundData[1]);
+                // 保留四位小数
+                values.put("updown", String.format("%1$.4f", Double.parseDouble(fundData[1]) -
+                        Double.parseDouble(fundData[3])));
                 values.put("scope", fundData[4]);  
-                values.put("date", fundData[5]);  
+                values.put("date", fundData[5]);
                 // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接  
                 SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
                 Cursor cursor = sqliteDatabase.rawQuery("select name from fund where fundCode='" + code + "'", null); 
@@ -187,7 +210,10 @@ public class DataService implements Runnable {
                 	//更新基金数据
                 	sqliteDatabase.update("fund", values, "fundCode="+"'"+code+"'", null);
                 }else{
-                	//插入基金数据
+                    // 插入需要基金代码和名称
+                    values.put("fundCode", code);
+                    values.put("name", fundData[0]);
+                    //插入基金数据
                 	// 第一个参数:表名称  
                     // 第二个参数：SQl不允许一个空列，如果ContentValues是空的，那么这一列被明确的指明为NULL值  
                     // 第三个参数：ContentValues对象  
