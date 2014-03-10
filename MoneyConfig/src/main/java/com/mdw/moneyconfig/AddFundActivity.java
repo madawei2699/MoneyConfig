@@ -1,16 +1,19 @@
 package com.mdw.moneyconfig;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,10 +27,14 @@ import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static android.os.SystemClock.sleep;
 
 public class AddFundActivity extends FragmentActivity implements OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -101,11 +108,28 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
     private String[] fundInsuranceRate = new String[] {"前端","后端"};
 
     private Handler handler = new Handler() {
-
         // 处理子线程给我们发送的消息
         @Override
         public void handleMessage(android.os.Message msg) {
-            pd.dismiss();// 关闭ProgressDialog
+            switch (msg.what){
+                case Constant.DATASERVICEOK:
+                    pd.dismiss();// 关闭ProgressDialog
+                    // 打开主界面
+                    Intent MainActivityIntent = new Intent();
+                    MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
+                    startActivity(MainActivityIntent);
+                    finish();
+                    break;
+                case Constant.SEARCHSERVICEOK:
+                    pd.dismiss();// 关闭ProgressDialog
+                    // 给webview展示内容
+                    showFundRateDialog(msg.getData().getString("html"));
+                    break;
+                default:
+                    break;
+            }
         };
     };
 
@@ -261,15 +285,37 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                 }
                 // 等待线程添加数据
                 // sleep(3000);
-                Intent MainActivityIntent = new Intent();
-                MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
-                startActivity(MainActivityIntent);
-                finish();
+
+                break;
+
+            case R.id.searchRate:
+                getEditValue();
+                // 用正则表达式判断输入基金代码是否正确
+                if(fundCode.matches("^of\\d{6,6}")){
+                    // 给线程传递请求URL
+                    queryHtml(Utils.getPropertiesURL("fundRateWeb")
+                            +fundCode.replaceAll("of",""));
+                }
                 break;
             default:
                 break;
         }
         return true;
+    }
+    @Override
+    public void onBackPressed()
+    {
+        //do whatever you want the 'Back' button to do
+        //as an example the 'Back' button is set to start a new Activity named 'NewActivity'
+        // 打开主界面
+        Intent MainActivityIntent = new Intent();
+        MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
+        startActivity(MainActivityIntent);
+        finish();
+
+        return;
     }
 
     @Override
@@ -302,6 +348,41 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         }else{
             values.put("fundRate", fundRate);
         }
+    }
+
+    /**
+     * 解析url,获取网页并使用Jsoup解析
+     * @param url
+     * @return
+     */
+    public void queryHtml(String url){
+        pd = ProgressDialog.show(AddFundActivity.this, "查询数据", "加载中，请稍后……");
+
+        //开启线程，连接主页，获取html，开始进行解析
+        SearchService ss = new SearchService(url,handler);
+        new Thread(ss).start();
+    }
+
+    /**
+     * 显示基金费率对话框
+     * @param html
+     */
+    public void showFundRateDialog(String html){
+        AlertDialog.Builder fundRateDialog = new AlertDialog.Builder(this);
+        fundRateDialog.setTitle("基金费率");
+        WebView wv = new WebView(this);
+        // 加载费率页面
+        wv.loadDataWithBaseURL(Utils.getPropertiesURL("baseAssetsURL"),html,
+                Utils.getPropertiesURL("mime"),
+                Utils.getPropertiesURL("encodeFundRate"),null);
+        fundRateDialog.setView(wv);
+        fundRateDialog.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        fundRateDialog.show();
     }
 
 }

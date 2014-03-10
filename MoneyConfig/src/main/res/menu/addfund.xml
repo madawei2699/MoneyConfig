@@ -19,9 +19,9 @@
             android:enabled="false"/>
 
         <item
-            android:title="@string/ok"
+            android:id="@+id/searchRate"
+            android:title="@string/searchRate"
             android:showAsAction="always"
-            android:icon="@drawable/transparent"
-            android:enabled="false"/>
+            android:icon="@drawable/searchrate"/>
 
 </menu>

@@ -27,6 +27,7 @@
     <string name="stock_tax">税收</string>
     <string name="title_addFund">添加基金</string>
     <string name="ok">确定</string>
+    <string name="searchRate">费率查询</string>
 
     <string name="editFundCodeHits">输入开放式基金代码</string>
     <string name="editFundMoney">输入整数，单位：元</string>

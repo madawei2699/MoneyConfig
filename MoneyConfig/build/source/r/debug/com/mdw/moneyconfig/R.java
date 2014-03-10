@@ -80,10 +80,11 @@ public final class R {
         public static final int proportion=0x7f020009;
         public static final int proportion_bak=0x7f02000a;
         public static final int proportion_pressed=0x7f02000b;
-        public static final int stock=0x7f02000c;
-        public static final int stock_bak=0x7f02000d;
-        public static final int stock_pressed=0x7f02000e;
-        public static final int transparent=0x7f02000f;
+        public static final int searchrate=0x7f02000c;
+        public static final int stock=0x7f02000d;
+        public static final int stock_bak=0x7f02000e;
+        public static final int stock_pressed=0x7f02000f;
+        public static final int transparent=0x7f020010;
     }
     public static final class id {
         public static final int ampm_hitspace=0x7f060031;
@@ -92,7 +93,7 @@ public final class R {
         public static final int buttonDate=0x7f060013;
         public static final int buttonTime=0x7f060014;
         public static final int center_view=0x7f06002b;
-        public static final int config=0x7f06003f;
+        public static final int config=0x7f060040;
         public static final int content=0x7f060009;
         public static final int date_picker_day=0x7f060001;
         public static final int date_picker_header=0x7f060002;
@@ -106,7 +107,7 @@ public final class R {
         public static final int editFundCode=0x7f06000b;
         public static final int editFundInsuranceRate=0x7f060011;
         public static final int editFundMoney=0x7f06000d;
-        public static final int fund=0x7f06003c;
+        public static final int fund=0x7f06003d;
         public static final int fund_head=0x7f060015;
         public static final int fund_horizontalScrollView1=0x7f060019;
         public static final int fund_listView1=0x7f060016;
@@ -123,12 +124,13 @@ public final class R {
         public static final int minutes=0x7f060030;
         public static final int minutes_space=0x7f06002f;
         public static final int month_text_view=0x7f060008;
-        public static final int proportion=0x7f06003e;
+        public static final int proportion=0x7f06003f;
         public static final int saveFund=0x7f06003b;
         public static final int scroollContainter=0x7f060021;
+        public static final int searchRate=0x7f06003c;
         public static final int separator=0x7f06002d;
         public static final int spinnerFrontBack=0x7f060010;
-        public static final int stock=0x7f06003d;
+        public static final int stock=0x7f06003e;
         public static final int stock_head=0x7f060029;
         public static final int stock_horizontalScrollView1=0x7f060022;
         public static final int stock_listView1=0x7f06002a;
@@ -215,29 +217,30 @@ public final class R {
         public static final int proportion=0x7f070023;
         public static final int radial_numbers_typeface=0x7f070024;
         public static final int sans_serif=0x7f070025;
-        public static final int select_day=0x7f070026;
-        public static final int select_hours=0x7f070027;
-        public static final int select_minutes=0x7f070028;
-        public static final int select_year=0x7f070029;
-        public static final int selection_radius_multiplier=0x7f07002a;
-        public static final int stock=0x7f07002b;
-        public static final int stock_capital=0x7f07002c;
-        public static final int stock_date=0x7f07002d;
-        public static final int stock_name=0x7f07002e;
-        public static final int stock_price=0x7f07002f;
-        public static final int stock_tax=0x7f070030;
-        public static final int stock_updown=0x7f070031;
-        public static final int stock_updownscope=0x7f070032;
-        public static final int textViewFundAmount=0x7f070033;
-        public static final int textViewFundDate=0x7f070034;
-        public static final int textViewFundMoney=0x7f070035;
-        public static final int text_size_multiplier_inner=0x7f070036;
-        public static final int text_size_multiplier_normal=0x7f070037;
-        public static final int text_size_multiplier_outer=0x7f070038;
-        public static final int time_placeholder=0x7f070039;
-        public static final int time_separator=0x7f07003a;
-        public static final int title_addFund=0x7f07003b;
-        public static final int year_picker_description=0x7f07003c;
+        public static final int searchRate=0x7f070026;
+        public static final int select_day=0x7f070027;
+        public static final int select_hours=0x7f070028;
+        public static final int select_minutes=0x7f070029;
+        public static final int select_year=0x7f07002a;
+        public static final int selection_radius_multiplier=0x7f07002b;
+        public static final int stock=0x7f07002c;
+        public static final int stock_capital=0x7f07002d;
+        public static final int stock_date=0x7f07002e;
+        public static final int stock_name=0x7f07002f;
+        public static final int stock_price=0x7f070030;
+        public static final int stock_tax=0x7f070031;
+        public static final int stock_updown=0x7f070032;
+        public static final int stock_updownscope=0x7f070033;
+        public static final int textViewFundAmount=0x7f070034;
+        public static final int textViewFundDate=0x7f070035;
+        public static final int textViewFundMoney=0x7f070036;
+        public static final int text_size_multiplier_inner=0x7f070037;
+        public static final int text_size_multiplier_normal=0x7f070038;
+        public static final int text_size_multiplier_outer=0x7f070039;
+        public static final int time_placeholder=0x7f07003a;
+        public static final int time_separator=0x7f07003b;
+        public static final int title_addFund=0x7f07003c;
+        public static final int year_picker_description=0x7f07003d;
     }
     public static final class style {
         /** 

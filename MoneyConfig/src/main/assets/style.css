@@ -1,0 +1,18 @@
+.tableContainer{width: 400px;}
+.tableContainer table{border-collapse: collapse;width: 400px;}
+.tableContainer td, .tableContainer th{border: 1px solid #dce5f4;}
+.tableContainer th{height: 30px;background-color: #e6eefa;text-align: center;font-size: 14px;}
+.tableContainer th h3{font-weight: normal;}
+.tableContainer td{height: 26px;line-height: 22px;}
+.tableContainer td span{display: block;}
+.tableContainer td .s2, .tableContainer td .s4, .tableContainer td .s5{padding-left: 10px;}
+.tableContainer td .s1{width: 104px;text-align: center;}
+.tableContainer td .s2{width: 274px;}
+.tableContainer td .s3{width: 118px;text-align: center;}
+.tableContainer td .s4{width: 254px;}
+
+
+.tableContainer .tc td{text-align: center;}
+.tableContainer .ntb{float: left;margin-top: 10px;}
+.tableContainer .nth{background: #f5f5f5;height: 25px;}
+

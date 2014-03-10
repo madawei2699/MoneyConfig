@@ -1,11 +1,13 @@
 package com.mdw.moneyconfig;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +57,27 @@ public class MainActivity extends Activity {
 	 */
 	private ImageView addImage;
 
+    /**
+     * 进度条
+     */
+    private ProgressDialog pd;
+
+    private Handler handler = new Handler() {
+        // 处理子线程给我们发送的消息
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what){
+                case Constant.DATASERVICEOK:
+                    pd.dismiss();// 关闭ProgressDialog
+                    // 第一次启动时选中基金tab
+                    setTabSelection(0);
+                    break;
+                default:
+                    break;
+            }
+        };
+    };
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,10 +89,10 @@ public class MainActivity extends Activity {
 		// 初始化布局元素
 		initViews();
 		fragmentManager = getFragmentManager();
-		// 第一次启动时选中基金tab
-		setTabSelection(0);
+        /* 显示ProgressDialog */
+        pd = ProgressDialog.show(MainActivity.this, "资产配置", "刷新数据，请稍后……");
 		// 后台数据更新
-		new Thread(new DataService()).start();
+		new Thread(new DataService(handler)).start();
 	}
 
 

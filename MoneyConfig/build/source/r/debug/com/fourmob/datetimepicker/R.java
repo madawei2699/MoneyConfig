@@ -107,17 +107,17 @@ public final class R {
 		public static final int numbers_radius_multiplier_outer = 0x7f070021;
 		public static final int radial_numbers_typeface = 0x7f070024;
 		public static final int sans_serif = 0x7f070025;
-		public static final int select_day = 0x7f070026;
-		public static final int select_hours = 0x7f070027;
-		public static final int select_minutes = 0x7f070028;
-		public static final int select_year = 0x7f070029;
-		public static final int selection_radius_multiplier = 0x7f07002a;
-		public static final int text_size_multiplier_inner = 0x7f070036;
-		public static final int text_size_multiplier_normal = 0x7f070037;
-		public static final int text_size_multiplier_outer = 0x7f070038;
-		public static final int time_placeholder = 0x7f070039;
-		public static final int time_separator = 0x7f07003a;
-		public static final int year_picker_description = 0x7f07003c;
+		public static final int select_day = 0x7f070027;
+		public static final int select_hours = 0x7f070028;
+		public static final int select_minutes = 0x7f070029;
+		public static final int select_year = 0x7f07002a;
+		public static final int selection_radius_multiplier = 0x7f07002b;
+		public static final int text_size_multiplier_inner = 0x7f070037;
+		public static final int text_size_multiplier_normal = 0x7f070038;
+		public static final int text_size_multiplier_outer = 0x7f070039;
+		public static final int time_placeholder = 0x7f07003a;
+		public static final int time_separator = 0x7f07003b;
+		public static final int year_picker_description = 0x7f07003d;
 	}
 	public static final class style {
 		public static final int AppBaseTheme = 0x7f080000;

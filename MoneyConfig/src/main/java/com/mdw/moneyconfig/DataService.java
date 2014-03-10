@@ -74,7 +74,8 @@ public class DataService implements Runnable {
     }
 
     //更新基金股票数据
-    public DataService(){
+    public DataService(android.os.Handler handler){
+        this.handler = handler;
     	this.updateOrNot=true;
     }
 
@@ -98,7 +99,9 @@ public class DataService implements Runnable {
             }
     	}
         if(handler != null){
-            handler.sendEmptyMessage(0);// 执行耗时的方法之后发送消给handler
+            Message m = new Message();
+            m.what = Constant.DATASERVICEOK;
+            handler.sendMessage(m);// 执行耗时的方法之后发送消给handler
         }
 
     }

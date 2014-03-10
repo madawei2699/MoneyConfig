@@ -2,7 +2,7 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 16
-    buildToolsVersion "19.0.1"
+    buildToolsVersion '19.0.1'
 
     defaultConfig {
         minSdkVersion 14
@@ -20,4 +20,5 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:+'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.1'
+    compile files('src/main/libs/jsoup-1.7.3.jar')
 }
