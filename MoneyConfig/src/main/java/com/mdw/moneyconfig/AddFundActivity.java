@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -72,11 +73,6 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
     private String buyMoney="";
 
     /**
-     * 购买数量
-     */
-    private String buyAmount="";
-
-    /**
      * 收费模式,0-前端,1-后端
      */
     private int fundInsuranceType = 0;
@@ -97,6 +93,11 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
     private String buyTime;
 
     /**
+     * 购买价格
+     */
+    private String buyPrice;
+
+    /**
      * 日期按钮
      */
     Button buttonDate;
@@ -112,21 +113,14 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         @Override
         public void handleMessage(android.os.Message msg) {
             switch (msg.what){
-                case Constant.DATASERVICEOK:
-                    pd.dismiss();// 关闭ProgressDialog
-                    // 打开主界面
-                    Intent MainActivityIntent = new Intent();
-                    MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                    MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
-                    startActivity(MainActivityIntent);
-                    finish();
-                    break;
                 case Constant.SEARCHSERVICEOK:
                     pd.dismiss();// 关闭ProgressDialog
                     // 给webview展示内容
                     showFundRateDialog(msg.getData().getString("html"));
                     break;
+                case Constant.FUNDPRICEOK:
+                    pd.dismiss();// 关闭ProgressDialog
+                    buyPrice = msg.getData().getString("jjjz");
                 default:
                     break;
             }
@@ -201,7 +195,6 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         // 开放式基金前缀为"of"
         fundCode = "of" + editFundCode.getText().toString();
         buyMoney = editFundMoney.getText().toString();
-        buyAmount = editFundAmount.getText().toString();
         fundRate = editFundInsuranceRate.getText().toString();
 
     }
@@ -246,6 +239,12 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         buyDate = Integer.toString(year)+"-"+Integer.toString(month+1)+"-"+Integer.toString(day);
+        pd = ProgressDialog.show(AddFundActivity.this, "查询历史净值", "加载中，请稍后……");
+        //开启线程，获取json，开始进行解析
+        if(fundCode.matches("^of\\d{6,6}")){
+            FundPriceService fs = new FundPriceService(fundCode,buyDate,handler);
+            new Thread(fs).start();
+        }
         // 设置日期按钮值
         buttonDate.setText(buyDate);
     }
@@ -271,20 +270,22 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                 // 用正则表达式判断输入基金代码是否正确
                 if(fundCode.matches("^of\\d{6,6}")){
                     wrapData();
-                    // 初始化数据处理类对象
-                    DataService ds = new DataService(values,handler);
-                    /* 显示ProgressDialog */
-                    pd = ProgressDialog.show(AddFundActivity.this, "添加基金", "加载中，请稍后……");
-                    // 使用HandlerThread线程保存数据
-//                    HandlerThread mHandlerThread = new HandlerThread("ds", 1);
-//                    mHandlerThread.start();
-//                    Handler mHandler = new Handler(mHandlerThread.getLooper());
-//                    mHandler.post(ds);
-                    // 调用多线程执行数据抓取存储
-                    new Thread(ds).start();
+                    // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的
+                    DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
+                    // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接
+                    SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
+                    // 在fund_buyInfo中插入数据
+                    sqliteDatabase.insert("fund_buyInfo", null, values);
+                    // 关闭数据库
+                    sqliteDatabase.close();
+                    // 打开主界面
+                    Intent MainActivityIntent = new Intent();
+                    MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
+                    startActivity(MainActivityIntent);
+                    finish();
                 }
-                // 等待线程添加数据
-                // sleep(3000);
 
                 break;
 
@@ -333,20 +334,33 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         values = new ContentValues();
         values.put("fundCode", fundCode);
         values.put("fundInsuranceType", fundInsuranceType);
-        if("".equals(buyMoney)){
-            values.put("buyMoney", "0");
-        }else{
-            values.put("buyMoney", buyMoney);
-        }
-        if("".equals(buyAmount)){
-            values.put("buyAmount", "0");
-        }else{
-            values.put("buyAmount", buyAmount);
-        }
+        values.put("buyPrice",buyPrice);
+        values.put("buyDate", buyDate);
         if("".equals(fundRate)){
             values.put("fundRate", "0");
         }else{
             values.put("fundRate", fundRate);
+        }
+        if("".equals(buyMoney)){
+            values.put("buyMoney", "0");
+        }else{
+            values.put("buyMoney", fundRate);
+        }
+        // 如果是前端收费,则计算购买数量
+        // 净申购金额＝申购金额/（1＋申购费率）
+        // 申购费用＝申购金额－净申购金额
+        // 申购份额＝净申购金额/T日申购价格
+        // 注：净申购金额及申购份额的计算结果以四舍五入的方法保留小数点后两位。
+        if(fundInsuranceType == 0 && (!fundRate.equals(""))){
+            Double jsgje = Double.parseDouble(buyMoney)/(1+Double.parseDouble(fundRate));
+            Double sgfy = Double.parseDouble(buyMoney) - jsgje;
+            Double sgfe = jsgje/Double.parseDouble(buyPrice);
+            values.put("poundage",String.format("%.2f", sgfy));
+            values.put("buyAmount",String.format("%.2f", sgfe));
+        }else if(fundInsuranceType == 1){
+            Double hdsgfe = Double.parseDouble(buyMoney)/Double.parseDouble(buyPrice);
+            values.put("poundage","0");
+            values.put("buyAmount",String.format("%.2f", hdsgfe));
         }
     }
 

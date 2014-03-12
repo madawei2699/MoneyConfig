@@ -57,8 +57,8 @@ public class FundFragment extends Fragment {
         // 第五个参数String:对查询的结果进行分组
         // 第六个参数String：对分组的结果进行限制
         // 第七个参数String：对查询的结果进行排序
-        cursor = sqliteDatabase.query("fund", new String[] { "fundCode",
-                "name", "price", "updown", "scope", "date", "poundage", "buyMoney" },
+        cursor = sqliteDatabase.query("fund_base", new String[] { "fundCode",
+                "name", "price", "updown", "scope", "date"},
                 null, null, null, null, null);
 
         this.dbCount = cursor.getCount();
@@ -167,8 +167,8 @@ public class FundFragment extends Fragment {
             holder.updown.setText(cursor.getString(cursor.getColumnIndex("updown")));
             holder.scope.setText(cursor.getString(cursor.getColumnIndex("scope")));
             holder.date.setText(cursor.getString(cursor.getColumnIndex("date")));
-            holder.poundage.setText(cursor.getString(cursor.getColumnIndex("poundage")));
-            holder.capital.setText(cursor.getString(cursor.getColumnIndex("buyMoney")));
+            //holder.poundage.setText(cursor.getString(cursor.getColumnIndex("poundage")));
+            //holder.capital.setText(cursor.getString(cursor.getColumnIndex("buyMoney")));
             // 设置字体大小
             holder.fundCode.setTextSize(15);
             holder.price.setTextSize(20);

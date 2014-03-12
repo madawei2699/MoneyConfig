@@ -90,7 +90,7 @@ public class DataService implements Runnable {
     		getAndStoreStockData(stockCode);
     	}else if(updateOrNot){
             SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
-            Cursor cursor = sqliteDatabase.rawQuery("select fundCode from fund", null);
+            Cursor cursor = sqliteDatabase.rawQuery("select fundCode from fund_base", null);
             if(0!=cursor.getCount()){
             	// 将光标移动到下一行，从而判断该结果集是否还有下一条数据，如果有则返回true，没有则返回false  
                 while (cursor.moveToNext()) {  
@@ -208,10 +208,10 @@ public class DataService implements Runnable {
                 values.put("date", fundData[5]);
                 // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接  
                 SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
-                Cursor cursor = sqliteDatabase.rawQuery("select name from fund where fundCode='" + code + "'", null); 
+                Cursor cursor = sqliteDatabase.rawQuery("select name from fund_base where fundCode='" + code + "'", null);
                 if(0!=cursor.getCount()){
                 	//更新基金数据
-                	sqliteDatabase.update("fund", values, "fundCode="+"'"+code+"'", null);
+                	sqliteDatabase.update("fund_base", values, "fundCode="+"'"+code+"'", null);
                 }else{
                     // 插入需要基金代码和名称
                     values.put("fundCode", code);
@@ -220,7 +220,7 @@ public class DataService implements Runnable {
                 	// 第一个参数:表名称  
                     // 第二个参数：SQl不允许一个空列，如果ContentValues是空的，那么这一列被明确的指明为NULL值  
                     // 第三个参数：ContentValues对象  
-                	sqliteDatabase.insert("fund", null, values);  
+                	sqliteDatabase.insert("fund_base", null, values);
                 }
                 sqliteDatabase.close();
             }

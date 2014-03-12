@@ -10,7 +10,7 @@
     <string name="config">设置</string>
     <string name="add">添加</string>
     <string name="fund_name">名称</string>
-    <string name="fund_price">净值</string>
+    <string name="fund_price">现价</string>
     <string name="fund_updown">涨跌</string>
     <string name="fund_scope">涨跌幅</string>
     <string name="fund_date">日期</string>
