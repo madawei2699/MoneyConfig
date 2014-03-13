@@ -44,7 +44,7 @@ public class FundPriceService implements Runnable {
 
 
     public FundPriceService(String fundCode,String fundDate, Handler handler){
-        this.fundCode = fundCode;
+        this.fundCode = fundCode.replace("of","");
         this.fundDate = fundDate;
         this.handler = handler;
     }
@@ -63,10 +63,16 @@ public class FundPriceService implements Runnable {
                     //设置Http请求参数
                     Map<String, String> params = new HashMap<String, String>();
                     String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
-                    //检查数据是否为空
-                    JSONObject jo = new JSONObject(result);
-                    if(jo.get("total_num").toString().equals("1")){
-                        b.putString("jjjz",jo.get("jjjz").toString());
+                    //解析JSON格式数据并检查数据是否为空
+                    JSONObject jo = new JSONObject(result.replaceAll("\"","\\\""));
+                    JSONObject jo_result = (JSONObject)jo.get("result");
+                    JSONObject jo_data = (JSONObject)jo_result.get("data");
+                    if(jo_data.get("total_num").toString().equals("1")){
+                        JSONArray ja_data = (JSONArray) jo_data.get("data");
+                        JSONObject o = (JSONObject)ja_data.get(0);
+                        b.putString("jjjz",o.getString("jjjz"));
+                    }else {
+                        b.putString("jjjz","");
                     }
                 }
                 m.setData(b);

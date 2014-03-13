@@ -135,11 +135,6 @@ public class FundFragment extends Fragment {
 							.findViewById(R.id.fund_textView5);
 					holder.date = (TextView) convertView
 							.findViewById(R.id.fund_textView6);
-					holder.poundage = (TextView) convertView
-							.findViewById(R.id.fund_textView7);
-					holder.capital = (TextView) convertView
-							.findViewById(R.id.fund_textView8);
-
 					MyHScrollView headSrcrollView = (MyHScrollView) mHead
 							.findViewById(R.id.fund_horizontalScrollView1);
 					headSrcrollView
@@ -175,8 +170,6 @@ public class FundFragment extends Fragment {
             holder.updown.setTextSize(20);
             holder.scope.setTextSize(20);
             holder.date.setTextSize(15);
-            holder.poundage.setTextSize(20);
-            holder.capital.setTextSize(20);
             // 基金涨幅大于0，则颜色设置为红色，否则为绿色
             if(Double.parseDouble(cursor.getString(cursor.getColumnIndex("updown")))>0){
                 holder.price.setTextColor(getResources().getColor(R.color.red));
@@ -209,8 +202,6 @@ public class FundFragment extends Fragment {
 			TextView updown;
 			TextView scope;
 			TextView date;
-			TextView poundage;
-			TextView capital;
 			HorizontalScrollView scrollView;
 		}
 	}

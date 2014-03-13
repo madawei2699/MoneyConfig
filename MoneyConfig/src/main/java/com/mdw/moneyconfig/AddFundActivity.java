@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
@@ -121,6 +121,30 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                 case Constant.FUNDPRICEOK:
                     pd.dismiss();// 关闭ProgressDialog
                     buyPrice = msg.getData().getString("jjjz");
+                    // 如果查询不到购买日期的历史净值，则提示用户无法添加基金
+                    if(!buyPrice.equals("")){
+                        wrapData();
+                        // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的
+                        DatabaseHelper dbHelper = new DatabaseHelper(AddFundActivity.this, "moneyconfig_db");
+                        // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接
+                        SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
+                        // 在fund_buyInfo中插入数据
+                        sqliteDatabase.insert("fund_buyInfo", null, values);
+                        // 关闭数据库
+                        sqliteDatabase.close();
+                        // 打开主界面
+                        Intent MainActivityIntent = new Intent();
+                        MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                        MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
+                        startActivity(MainActivityIntent);
+                        finish();
+                    }else {
+                        Toast toast=Toast.makeText(AddFundActivity.this,
+                                getResources().getString(R.string.errorFindFundRate), Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                    break;
                 default:
                     break;
             }
@@ -190,7 +214,6 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
     private void getEditValue(){
         EditText editFundCode = (EditText) findViewById(R.id.editFundCode);
         EditText editFundMoney = (EditText) findViewById(R.id.editFundMoney);
-        EditText editFundAmount = (EditText) findViewById(R.id.editFundAmount);
         EditText editFundInsuranceRate = (EditText) findViewById(R.id.editFundInsuranceRate);
         // 开放式基金前缀为"of"
         fundCode = "of" + editFundCode.getText().toString();
@@ -239,12 +262,6 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
         buyDate = Integer.toString(year)+"-"+Integer.toString(month+1)+"-"+Integer.toString(day);
-        pd = ProgressDialog.show(AddFundActivity.this, "查询历史净值", "加载中，请稍后……");
-        //开启线程，获取json，开始进行解析
-        if(fundCode.matches("^of\\d{6,6}")){
-            FundPriceService fs = new FundPriceService(fundCode,buyDate,handler);
-            new Thread(fs).start();
-        }
         // 设置日期按钮值
         buttonDate.setText(buyDate);
     }
@@ -269,26 +286,14 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                 getEditValue();
                 // 用正则表达式判断输入基金代码是否正确
                 if(fundCode.matches("^of\\d{6,6}")){
-                    wrapData();
-                    // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的
-                    DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
-                    // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接
-                    SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
-                    // 在fund_buyInfo中插入数据
-                    sqliteDatabase.insert("fund_buyInfo", null, values);
-                    // 关闭数据库
-                    sqliteDatabase.close();
-                    // 打开主界面
-                    Intent MainActivityIntent = new Intent();
-                    MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                    MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
-                    startActivity(MainActivityIntent);
-                    finish();
+                    //开启线程，获取json，开始进行解析
+                    if(fundCode.matches("^of\\d{6,6}")){
+                        pd = ProgressDialog.show(AddFundActivity.this, "查询历史净值", "加载中，请稍后……");
+                        FundPriceService fs = new FundPriceService(fundCode,buyDate,handler);
+                        new Thread(fs).start();
+                    }
                 }
-
                 break;
-
             case R.id.searchRate:
                 getEditValue();
                 // 用正则表达式判断输入基金代码是否正确

@@ -77,25 +77,6 @@
                     android:gravity="center_vertical"
                     android:text="@string/fund_date"/>
 
-                <TextView
-                    android:id="@+id/fund_textView7"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:textSize="15sp"
-                    android:gravity="center_vertical"
-                    android:text="@string/fund_poundage"/>
-                
-                <TextView
-                    android:id="@+id/fund_textView8"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:textSize="15sp"
-                    android:gravity="center_vertical"
-                    android:text="@string/fund_capital"/>
             </LinearLayout>
         </com.mdw.moneyconfig.MyHScrollView>
     </com.mdw.moneyconfig.InterceptScrollContainer>

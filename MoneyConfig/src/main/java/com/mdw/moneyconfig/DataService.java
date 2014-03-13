@@ -48,9 +48,9 @@ public class DataService implements Runnable {
     private boolean updateOrNot=false;
     // 创建ContentValues对象
     ContentValues values = new ContentValues();
-    // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的  
-    DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
-    
+    // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的
+    DatabaseHelper dbHelper;
+
     public DataService(String code) {
     	//如果代码包含of则为开放式基金，如果包含sz或sh则为股票
     	if(code.contains("of")){
@@ -58,12 +58,14 @@ public class DataService implements Runnable {
     	}else if(code.contains("sz") || code.contains("sh")){
     		this.stockCode = code;
     	}
+        dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
     }
 
     public DataService(ContentValues values) {
         //如果代码包含of则为开放式基金，如果包含sz或sh则为股票
         this.values = values;
         this.fundCode = values.getAsString("fundCode");
+        dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
     }
 
     public DataService(ContentValues values, android.os.Handler handler) {
@@ -71,12 +73,14 @@ public class DataService implements Runnable {
         this.values = values;
         this.fundCode = values.getAsString("fundCode");
         this.handler = handler;
+        dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
     }
 
     //更新基金股票数据
     public DataService(android.os.Handler handler){
         this.handler = handler;
     	this.updateOrNot=true;
+        dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
     }
 
     @Override
