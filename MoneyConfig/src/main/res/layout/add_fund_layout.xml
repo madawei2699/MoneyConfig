@@ -113,7 +113,7 @@
                 android:digits="1234567890."
                 android:ems="10"
                 android:hint="@string/editFundInsuranceRate"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:lines="1"
                 android:maxLength="10"
                 android:singleLine="true" >

@@ -95,8 +95,7 @@ public class MainActivity extends Activity {
 		new Thread(new DataService(handler)).start();
 	}
 
-
-	private void initViews() {
+    private void initViews() {
 		titleText = (TextView) findViewById(R.id.title_text);
 		addImage = (ImageView) findViewById(R.id.title_add);
 		addImage.setOnClickListener(new View.OnClickListener() {

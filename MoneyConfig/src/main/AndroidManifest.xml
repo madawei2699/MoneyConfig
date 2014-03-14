@@ -18,15 +18,19 @@
         android:theme="@style/AppTheme" 
         android:name=".MyApplication">
         <activity
-            android:name="com.mdw.moneyconfig.MainActivity"
-            android:theme="@android:style/Theme.Holo.Light"  
-            android:uiOptions="splitActionBarWhenNarrow"
-            android:label="@string/app_name" 
-            android:configChanges="orientation|screenSize">
+            android:name="com.mdw.moneyconfig.SplashScreen"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.mdw.moneyconfig.MainActivity"
+            android:theme="@android:style/Theme.Holo.Light"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:configChanges="orientation|screenSize">
         </activity>
         <activity
             android:name="com.mdw.moneyconfig.AddFundActivity"

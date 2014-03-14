@@ -29,6 +29,7 @@
     <string name="ok">确定</string>
     <string name="searchRate">费率查询</string>
     <string name="errorFindFundRate">查询不到指定日期的基金历史净值，请重新输入日期！</string>
+    <string name="errorFundCode">请输入正确的基金代码</string>
 
     <string name="editFundCodeHits">输入开放式基金代码</string>
     <string name="editFundMoney">输入整数，单位：元</string>

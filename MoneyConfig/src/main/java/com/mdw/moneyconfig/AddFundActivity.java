@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -128,14 +129,24 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                         DatabaseHelper dbHelper = new DatabaseHelper(AddFundActivity.this, "moneyconfig_db");
                         // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接
                         SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
+                        // 查询fund_base表是否有此基金实时数据
+                        Cursor c = sqliteDatabase.rawQuery("select fundCode from fund_base where fundCode ='"
+                                + fundCode + "'",null);
+                        // 如果无此基金代码，则新增一条记录
+                        if(c.getCount()==0){
+                            sqliteDatabase.execSQL("insert into fund_base(fundCode) values ('"
+                                    +fundCode +"')");
+                        }
+                        // 关闭游标
+                        c.close();
                         // 在fund_buyInfo中插入数据
                         sqliteDatabase.insert("fund_buyInfo", null, values);
                         // 关闭数据库
                         sqliteDatabase.close();
                         // 打开主界面
                         Intent MainActivityIntent = new Intent();
-                        MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                        MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        //MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                        //MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
                         startActivity(MainActivityIntent);
                         finish();
@@ -292,6 +303,10 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                         FundPriceService fs = new FundPriceService(fundCode,buyDate,handler);
                         new Thread(fs).start();
                     }
+                }else {
+                    Toast toast=Toast.makeText(AddFundActivity.this,
+                            getResources().getString(R.string.errorFundCode), Toast.LENGTH_SHORT);
+                    toast.show();
                 }
                 break;
             case R.id.searchRate:
@@ -315,8 +330,8 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         //as an example the 'Back' button is set to start a new Activity named 'NewActivity'
         // 打开主界面
         Intent MainActivityIntent = new Intent();
-        MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        //MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         MainActivityIntent.setClass(AddFundActivity.this,MainActivity.class);
         startActivity(MainActivityIntent);
         finish();
@@ -349,7 +364,7 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         if("".equals(buyMoney)){
             values.put("buyMoney", "0");
         }else{
-            values.put("buyMoney", fundRate);
+            values.put("buyMoney", buyMoney);
         }
         // 如果是前端收费,则计算购买数量
         // 净申购金额＝申购金额/（1＋申购费率）
@@ -357,7 +372,7 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         // 申购份额＝净申购金额/T日申购价格
         // 注：净申购金额及申购份额的计算结果以四舍五入的方法保留小数点后两位。
         if(fundInsuranceType == 0 && (!fundRate.equals(""))){
-            Double jsgje = Double.parseDouble(buyMoney)/(1+Double.parseDouble(fundRate));
+            Double jsgje = Double.parseDouble(buyMoney)/(1+Double.parseDouble(fundRate)/100);
             Double sgfy = Double.parseDouble(buyMoney) - jsgje;
             Double sgfe = jsgje/Double.parseDouble(buyPrice);
             values.put("poundage",String.format("%.2f", sgfy));

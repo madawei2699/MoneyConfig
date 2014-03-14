@@ -212,19 +212,12 @@ public class DataService implements Runnable {
                 values.put("date", fundData[5]);
                 // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接  
                 SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
-                Cursor cursor = sqliteDatabase.rawQuery("select name from fund_base where fundCode='" + code + "'", null);
+                Cursor cursor = sqliteDatabase.rawQuery("select fundCode from fund_base where fundCode='" + code + "'", null);
+                // 更新基金数据
                 if(0!=cursor.getCount()){
+                    values.put("name", fundData[0]);
                 	//更新基金数据
                 	sqliteDatabase.update("fund_base", values, "fundCode="+"'"+code+"'", null);
-                }else{
-                    // 插入需要基金代码和名称
-                    values.put("fundCode", code);
-                    values.put("name", fundData[0]);
-                    //插入基金数据
-                	// 第一个参数:表名称  
-                    // 第二个参数：SQl不允许一个空列，如果ContentValues是空的，那么这一列被明确的指明为NULL值  
-                    // 第三个参数：ContentValues对象  
-                	sqliteDatabase.insert("fund_base", null, values);
                 }
                 sqliteDatabase.close();
             }

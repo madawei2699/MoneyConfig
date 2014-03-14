@@ -41,8 +41,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		//fund_base表存储基金频繁更新的数据，包括基金名称、现价、涨跌、涨跌幅、日期;
         //fundCode-基金代码 name-基金名称 price-基金现价 updown-涨跌 scope-涨跌幅 date-日期
 		db.execSQL("create table fund_base(_id integer primary key autoincrement,fundCode varchar(10) not null unique," +
-                "name varchar(10),price varchar(10),updown varchar(10),scope varchar(10)," +
-				"date varchar(10))");
+                "name varchar(10) default '',price varchar(10) default '',updown varchar(10) default ''," +
+                "scope varchar(10) default '',date varchar(10) default '')");
         //fund_buyInfo表存储基金购买每次购买信息，包括购买金额、购买净值、购买数量、收费模式、收费费率、购买日期、手续费
         //fundCode-基金代码 buyPrice-购买价格 buyAmount-购买数量 fundRate-费率 buyDate-购买日期 fundInsuranceType-收费模式
         //poundage-手续费 buyMoney-购买金额

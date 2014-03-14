@@ -153,7 +153,7 @@ public class FundFragment extends Fragment {
             String fundCode = cursor.getString(cursor.getColumnIndex("fundCode")).replaceAll("of", "");
             // 只显示五个汉字名称
             String fundName = cursor.getString(cursor.getColumnIndex("name"));
-            if(fundName.length()>5){
+            if(!(fundName.equals(""))&&fundName.length()>5){
                 fundName = fundName.substring(0,5);
             }
             // 基金名称和代码显示为一列
@@ -162,8 +162,6 @@ public class FundFragment extends Fragment {
             holder.updown.setText(cursor.getString(cursor.getColumnIndex("updown")));
             holder.scope.setText(cursor.getString(cursor.getColumnIndex("scope")));
             holder.date.setText(cursor.getString(cursor.getColumnIndex("date")));
-            //holder.poundage.setText(cursor.getString(cursor.getColumnIndex("poundage")));
-            //holder.capital.setText(cursor.getString(cursor.getColumnIndex("buyMoney")));
             // 设置字体大小
             holder.fundCode.setTextSize(15);
             holder.price.setTextSize(20);
