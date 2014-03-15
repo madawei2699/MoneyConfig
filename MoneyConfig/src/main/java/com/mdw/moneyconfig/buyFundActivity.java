@@ -61,7 +61,7 @@ public class buyFundActivity extends Activity {
         // 调用SQLiteDatabase对象的query方法进行查询，返回一个Cursor对象：由数据库查询返回的结果集对象
         cursor = sqliteDatabase.query("fund_buyInfo", new String[] { "_id","buyMoney",
                 "buyAmount", "buyPrice", "poundage", "buyDate"},
-                null, null, null, null, null);
+                "fundCode='of"+fc+"'", null, null, null, null);
 
         this.dbCount = cursor.getCount();
 
@@ -87,7 +87,7 @@ public class buyFundActivity extends Activity {
                 // 重新查询游标
                 cursor = s.query("fund_buyInfo", new String[] { "_id","buyMoney",
                         "buyAmount", "buyPrice", "poundage", "buyDate"},
-                        null, null, null, null, null);
+                        "fundCode='of"+fc+"'", null, null, null, null);
                 dbCount = cursor.getCount();
                 // 关闭数据库
                 s.close();
