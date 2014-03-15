@@ -1,0 +1,18 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include
+        android:id="@+id/fund_buyinfo_head"
+        layout="@layout/item_fund_buyinfo" />
+
+    <com.mdw.moneyconfig.SwipeDismissListView
+        android:id="@+id/fund_buyinfo_listView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/fund_buyinfo_head"
+        android:cacheColorHint="@android:color/transparent">
+    </com.mdw.moneyconfig.SwipeDismissListView>>
+
+</RelativeLayout>

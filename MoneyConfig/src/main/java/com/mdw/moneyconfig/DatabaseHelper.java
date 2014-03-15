@@ -47,8 +47,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //fundCode-基金代码 buyPrice-购买价格 buyAmount-购买数量 fundRate-费率 buyDate-购买日期 fundInsuranceType-收费模式
         //poundage-手续费 buyMoney-购买金额
         db.execSQL("create table fund_buyInfo(_id integer primary key autoincrement,fundCode varchar(10) not null," +
-                "buyPrice varchar(10),buyAmount varchar(10),fundRate varchar(10),buyDate varchar(10)," +
-                "fundInsuranceType INTEGER,poundage varchar(10),buyMoney varchar(10))");
+                "buyPrice varchar(10),buyAmount varchar(10) default '0',fundRate varchar(10),buyDate varchar(10)," +
+                "fundInsuranceType INTEGER,poundage varchar(10) default '0',buyMoney varchar(10) default '0')");
         //fund_sum表存储某个基金的概览信息，包括本金、数量、盈亏、盈亏比列、止损、止盈、赎回费率、赎回费
         //fundCode-基金代码 fundCapital-该基金本金 fundAmount-该基金数量 profitOrLoss-盈亏 PLPercent-盈亏比列 stopLoss-止损 stopProfit-止盈
         //redeem-赎回费 redeemRate-赎回费率

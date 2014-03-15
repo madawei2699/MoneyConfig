@@ -316,6 +316,10 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                     // 给线程传递请求URL
                     queryHtml(Utils.getPropertiesURL("fundRateWeb")
                             +fundCode.replaceAll("of",""));
+                }else {
+                    Toast toast=Toast.makeText(AddFundActivity.this,
+                            getResources().getString(R.string.errorFundCode), Toast.LENGTH_SHORT);
+                    toast.show();
                 }
                 break;
             default:

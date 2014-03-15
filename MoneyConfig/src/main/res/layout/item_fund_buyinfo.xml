@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/fundBuyInfoBuyMoneyLV"
+        android:gravity="center_vertical"
+        android:text="@string/fund_buyMoney"
+        android:layout_weight="1"
+        android:textSize="15sp"/>
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/fundBuyInfoBuyAmountLV"
+        android:gravity="center_vertical"
+        android:text="@string/fund_buyAmount"
+        android:layout_weight="1"
+        android:textSize="15sp"/>
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/fundBuyInfoBuyPriceLV"
+        android:text="@string/fund_buyPrice"
+        android:layout_weight="1"
+        android:textSize="15sp"/>
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/fundBuyInfoPoundageLV"
+        android:text="@string/fund_poundage"
+        android:layout_weight="1"
+        android:textSize="15sp"/>
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/fundBuyInfoDateLV"
+        android:text="@string/fund_buyDate"
+        android:layout_weight="1"
+        android:textSize="15sp"/>
+
+</LinearLayout>

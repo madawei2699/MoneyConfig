@@ -68,6 +68,56 @@
                     android:text="@string/fund_scope"/>
 
                 <TextView
+                    android:id="@+id/fund_textView_ProfitOrLossToday"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical"
+                    android:text="@string/fund_ProfitOrLossToday"/>
+
+                <TextView
+                    android:id="@+id/fund_textView_ProfitOrLossSum"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical"
+                    android:text="@string/fund_ProfitOrLossSum"/>
+
+                <TextView
+                    android:id="@+id/fund_textView_ProfitOrLossRate"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical"
+                    android:text="@string/fund_ProfitOrLossRate"/>
+
+                <TextView
+                    android:id="@+id/fund_textView_MarketValue"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical"
+                    android:text="@string/fund_MarketValue"/>
+
+                <TextView
+                    android:id="@+id/fund_textView_Position"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical"
+                    android:text="@string/fund_Position"/>
+
+                <TextView
                     android:id="@+id/fund_textView6"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"

@@ -47,4 +47,18 @@
     <color name="red">#FF0000</color>
     <color name="green">#008000</color>
 
+    <string name="fund_buyMoney">金额</string>
+    <string name="fund_buyAmount">数量</string>
+    <string name="fund_buyPrice">价格</string>
+    <string name="fund_buyDate">时间</string>
+
+    <string name="fund_deleteAll">全部删除</string>
+    <string name="fund_buyinfo">基金购买记录</string>
+
+    <string name="fund_ProfitOrLossToday">今日盈亏</string>
+    <string name="fund_ProfitOrLossSum">累计盈亏</string>
+    <string name="fund_ProfitOrLossRate">盈亏幅度</string>
+    <string name="fund_MarketValue">市值</string>
+    <string name="fund_Position">持仓</string>
+
 </resources>
