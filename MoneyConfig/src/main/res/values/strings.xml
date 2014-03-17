@@ -28,13 +28,13 @@
     <string name="title_addFund">添加基金</string>
     <string name="ok">确定</string>
     <string name="searchRate">费率查询</string>
-    <string name="errorFindFundRate">查询不到指定日期的基金历史净值，请重新输入日期！</string>
+    <string name="errorFindFundRate">查询不到指定日期的基金净值,请选择工作日！</string>
     <string name="errorFundCode">请输入正确的基金代码</string>
 
     <string name="editFundCodeHits">输入开放式基金代码</string>
-    <string name="editFundMoney">输入整数，单位：元</string>
+    <string name="editFundMoney">输入整数,单位:元</string>
     <string name="textViewFundMoney">购买金额</string>
-    <string name="editFundInsuranceRate">购买费率，不用输入%</string>
+    <string name="editFundInsuranceRate">费率,不用输入%</string>
     
     <string name="textViewFundAmount">购买数量</string>
     <string name="editFundAmount">输入购买数量</string>
@@ -53,12 +53,24 @@
     <string name="fund_buyDate">时间</string>
 
     <string name="fund_deleteAll">全部删除</string>
-    <string name="fund_buyinfo">基金购买记录</string>
+    <string name="fund_buyinfo">基金操作记录</string>
 
     <string name="fund_ProfitOrLossToday">今日盈亏</string>
     <string name="fund_ProfitOrLossSum">累计盈亏</string>
     <string name="fund_ProfitOrLossRate">盈亏幅度</string>
     <string name="fund_MarketValue">市值</string>
     <string name="fund_Position">持仓</string>
+
+    <string name="alert_dialog_message">删除该基金所有记录？</string>
+
+    <string name="fund_redeem">赎回</string>
+    <string name="title_redeemFund">赎回基金</string>
+    <string name="textViewFundRedeemMoney">赎回数量</string>
+    <string name="editFundRedeemAmount">输入份数</string>
+    <string name="textViewFundRedeemDate">赎回日期</string>
+    <string name="textViewFundBackRate">后端申购</string>
+    <string name="textViewFundRedeemRate">赎回费率</string>
+    <string name="editFundRedeemRate">不用输入%</string>
+    <string name="fund_BuyMoneySum">本金</string>
 
 </resources>

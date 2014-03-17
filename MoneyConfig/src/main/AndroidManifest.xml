@@ -30,7 +30,8 @@
             android:name="com.mdw.moneyconfig.MainActivity"
             android:theme="@android:style/Theme.Holo.Light"
             android:uiOptions="splitActionBarWhenNarrow"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name="com.mdw.moneyconfig.AddFundActivity"
@@ -39,6 +40,11 @@
             android:configChanges="orientation|screenSize"/>
         <activity
             android:name="com.mdw.moneyconfig.buyFundActivity"
+            android:theme="@android:style/Theme.Holo.Light"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name="com.mdw.moneyconfig.RedeemFundActivity"
             android:theme="@android:style/Theme.Holo.Light"
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize"/>

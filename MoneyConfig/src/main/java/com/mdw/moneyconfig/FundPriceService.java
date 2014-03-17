@@ -1,5 +1,8 @@
 package com.mdw.moneyconfig;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,47 +44,37 @@ public class FundPriceService implements Runnable {
     private String fundCode;
     // 净值日期
     private String fundDate;
+    //基金抓取数据
+    private String []fundData;
+    // 创建ContentValues对象
+    ContentValues values = new ContentValues();
+    // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的
+    DatabaseHelper dbHelper;
 
 
     public FundPriceService(String fundCode,String fundDate, Handler handler){
-        this.fundCode = fundCode.replace("of","");
+        this.fundCode = fundCode;
         this.fundDate = fundDate;
         this.handler = handler;
+        dbHelper = new DatabaseHelper(MyApplication.getInstance(),
+                "moneyconfig_db", 2);
     }
 
     @Override
     public void run() {
-
         if(handler != null){
             Message m = new Message();
             Bundle b = new Bundle();
             m.what = Constant.FUNDPRICEOK;
-            try {
-                if((!fundCode.equals(""))&&(!fundDate.equals(""))&&Utils.detectNetwork()){
-                    // 设置访问的Web站点
-                    String path = Utils.getPropertiesURL("SearchPriceByDate").replaceAll("fundCode",fundCode).replaceAll("fundDate",fundDate);
-                    //设置Http请求参数
-                    Map<String, String> params = new HashMap<String, String>();
-                    String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
-                    //解析JSON格式数据并检查数据是否为空
-                    JSONObject jo = new JSONObject(result.replaceAll("\"","\\\""));
-                    JSONObject jo_result = (JSONObject)jo.get("result");
-                    JSONObject jo_data = (JSONObject)jo_result.get("data");
-                    if(jo_data.get("total_num").toString().equals("1")){
-                        JSONArray ja_data = (JSONArray) jo_data.get("data");
-                        JSONObject o = (JSONObject)ja_data.get(0);
-                        b.putString("jjjz",o.getString("jjjz"));
-                    }else {
-                        b.putString("jjjz","");
-                    }
-                }
-                m.setData(b);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if((!fundCode.equals(""))&&(!fundDate.equals(""))&&Utils.detectNetwork()){
+                //基金代码不为空，则插入或更新基金数据
+                getAndStoreFundData(fundCode);
+                //查询基金历史净值
+                b.putString("jjjz",getFundPrice());
             }
+            m.setData(b);
             handler.sendMessage(m);// 执行耗时的方法之后发送消给handler
         }
-
     }
 
     /**
@@ -162,4 +155,74 @@ public class FundPriceService implements Runnable {
         return result;
     }
 
+    /**
+     * 获取并存储基金数据,如果code不为空且网络可用则发送http请求获取数据
+     * @return
+     */
+    public void getAndStoreFundData(String code){
+        if((!code.equals(""))&&Utils.detectNetwork()){
+            // 设置访问的Web站点
+            String path = Utils.getPropertiesURL("url") + code;
+            //设置Http请求参数
+            Map<String, String> params = new HashMap<String, String>();
+            String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
+            //检查数据是否为空
+            String data = result.split("=")[1].replaceAll("\"", "").replaceAll(";", "").replaceAll("\\n","");
+            if(!data.equals(""))
+            {
+                fundData = data.split(",");
+
+                // 向该对象中插入键值对，其中键是列名，值是希望插入到这一列的值，值必须和数据库当中的数据类型一致
+                values.put("price", fundData[1]);
+                // 保留四位小数
+                values.put("updown", String.format("%1$.4f", Double.parseDouble(fundData[1]) -
+                        Double.parseDouble(fundData[3])));
+                values.put("scope", fundData[4]);
+                values.put("date", fundData[5]);
+                // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接
+                SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
+                Cursor cursor = sqliteDatabase.rawQuery("select fundCode from fund_base where fundCode='" + code + "'", null);
+                // 更新基金数据
+                if(0!=cursor.getCount()){
+                    values.put("name", fundData[0]);
+                    //更新基金数据
+                    sqliteDatabase.update("fund_base", values, "fundCode="+"'"+code+"'", null);
+                }else {
+                    values.put("name", fundData[0]);
+                    values.put("fundCode", code);
+                    //插入基金数据
+                    sqliteDatabase.insert("fund_base",null,values);
+                }
+                sqliteDatabase.close();
+            }
+        }
+    }
+
+    /**
+     * 获取基金指定日期历史净值
+     * @return
+     */
+    public String getFundPrice(){
+        String jjjz = "";
+        // 设置访问的Web站点
+        String path = Utils.getPropertiesURL("SearchPriceByDate").replaceAll("fundCode",fundCode.replace("of","")).replaceAll("fundDate",fundDate);
+        //设置Http请求参数
+        Map<String, String> params = new HashMap<String, String>();
+        String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
+        //解析JSON格式数据并检查数据是否为空
+        JSONObject jo = null;
+        try {
+            jo = new JSONObject(result.replaceAll("\"","\\\""));
+            JSONObject jo_result = (JSONObject)jo.get("result");
+            JSONObject jo_data = (JSONObject)jo_result.get("data");
+            if(jo_data.get("total_num").toString().equals("1")){
+                JSONArray ja_data = (JSONArray) jo_data.get("data");
+                JSONObject o = (JSONObject)ja_data.get(0);
+                jjjz = o.getString("jjjz");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jjjz;
+    }
 }

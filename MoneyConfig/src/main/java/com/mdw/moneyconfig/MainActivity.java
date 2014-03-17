@@ -89,10 +89,19 @@ public class MainActivity extends Activity {
 		// 初始化布局元素
 		initViews();
 		fragmentManager = getFragmentManager();
-        /* 显示ProgressDialog */
-        pd = ProgressDialog.show(MainActivity.this, "资产配置", "刷新数据，请稍后……");
-		// 后台数据更新
-		new Thread(new DataService(handler)).start();
+        // 判断是否需要更新基金数据
+        if(true == getIntent().getExtras().getBoolean("updateFund")){
+            // 重新刷新基金界面
+            fundFragment = null;
+            // 选中基金界面
+            setTabSelection(0);
+        }else if(true == getIntent().getExtras().getBoolean("updateAllData")){
+            /* 显示ProgressDialog */
+            pd = ProgressDialog.show(MainActivity.this, "资产配置", "刷新数据，请稍后……");
+            // 后台数据更新
+            new Thread(new DataService(handler)).start();
+        }
+
 	}
 
     private void initViews() {
@@ -108,7 +117,7 @@ public class MainActivity extends Activity {
 					Intent addFundIntent = new Intent();
                     addFundIntent.setClass(MainActivity.this,AddFundActivity.class);
                     startActivity(addFundIntent);
-                    finish();
+                    //finish();
 				}else if(titleText.getText().equals(getResources().getString(R.string.stock))){
 					
 				}

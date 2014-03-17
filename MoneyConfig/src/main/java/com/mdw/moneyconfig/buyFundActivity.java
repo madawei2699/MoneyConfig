@@ -2,7 +2,9 @@ package com.mdw.moneyconfig;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,10 +29,15 @@ public class buyFundActivity extends Activity {
     Cursor cursor;
     MyAdapter myAdapter;
     LinearLayout mHead;
-    SwipeDismissListView swipeDismissListView;
+//    SwipeDismissListView swipeDismissListView;
+    ListView lv;
     int dbCount;
     // 基金代码
     String fc;
+    // 基金名称
+    String fn;
+    // 基金持仓
+    String position;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,12 +54,13 @@ public class buyFundActivity extends Activity {
         getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setDisplayShowCustomEnabled(true);
         fc = getIntent().getExtras().getString("fundCode");
-        String fn = getIntent().getExtras().getString("fundName");
+        fn = getIntent().getExtras().getString("fundName");
+        position = getIntent().getExtras().getString("position");
         TextView ttfbi = (TextView) addView.findViewById(R.id.title_text_fundbuyinfo);
         // 设置标题内容为基金名字+代码
         ttfbi.setText(fn+"["+fc+"]");
 
-        swipeDismissListView = (SwipeDismissListView) findViewById(R.id.fund_buyinfo_listView);
+        lv = (ListView) findViewById(R.id.fund_buyinfo_listView);
 
         //从数据库取基金数据
         final DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(),
@@ -72,29 +81,30 @@ public class buyFundActivity extends Activity {
 //        swipeDismissListView.setAdapter(cursorAdapter);
 
         myAdapter = new MyAdapter(buyFundActivity.this, R.layout.item_fund_buyinfo);
-        swipeDismissListView.setAdapter(myAdapter);
+//        swipeDismissListView.setAdapter(myAdapter);
+        lv.setAdapter(myAdapter);
 
-        swipeDismissListView.setOnDismissCallback(new SwipeDismissListView.OnDismissCallback() {
-            @Override
-            public void onDismiss(int dismissPosition) {
-                // 打开数据库
-                SQLiteDatabase s = dbHelper.getReadableDatabase();
-                // 游标移到要删除的对象
-                cursor.moveToPosition(dismissPosition);
-                // 删除基金购买记录
-                s.execSQL("delete from fund_buyInfo where _id='" +
-                        String.valueOf(cursor.getInt(cursor.getColumnIndex("_id"))) + "'");
-                // 重新查询游标
-                cursor = s.query("fund_buyInfo", new String[] { "_id","buyMoney",
-                        "buyAmount", "buyPrice", "poundage", "buyDate"},
-                        "fundCode='of"+fc+"'", null, null, null, null);
-                dbCount = cursor.getCount();
-                // 关闭数据库
-                s.close();
-                // 通知数据更新
-                myAdapter.notifyDataSetChanged();
-            }
-        });
+//        swipeDismissListView.setOnDismissCallback(new SwipeDismissListView.OnDismissCallback() {
+//            @Override
+//            public void onDismiss(int dismissPosition) {
+//                // 打开数据库
+//                SQLiteDatabase s = dbHelper.getReadableDatabase();
+//                // 游标移到要删除的对象
+//                cursor.moveToPosition(dismissPosition);
+//                // 删除基金购买记录
+//                s.execSQL("delete from fund_buyInfo where _id='" +
+//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("_id"))) + "'");
+//                // 重新查询游标
+//                cursor = s.query("fund_buyInfo", new String[] { "_id","buyMoney",
+//                        "buyAmount", "buyPrice", "poundage", "buyDate"},
+//                        "fundCode='of"+fc+"'", null, null, null, null);
+//                dbCount = cursor.getCount();
+//                // 关闭数据库
+//                s.close();
+//                // 通知数据更新
+//                myAdapter.notifyDataSetChanged();
+//            }
+//        });
         // 关闭数据库
         sqliteDatabase.close();
     } 
@@ -109,27 +119,57 @@ public class buyFundActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.fund_deleteAll:
-                //从数据库取基金数据
-                DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(),
-                        "moneyconfig_db", 2);
-                // 打开数据库
-                SQLiteDatabase s = dbHelper.getReadableDatabase();
-                // 以指定fundCode删除三张基金表中全部的相关基金
-                s.execSQL("delete from fund_buyInfo where fundCode='of" + fc + "'");
-                s.execSQL("delete from fund_base where fundCode='of" + fc + "'");
-                s.execSQL("delete from fund_sum where fundCode='of" + fc + "'");
-                // 关闭数据库
-                s.close();
-
-                // 打开主界面
-                Intent MainActivityIntent = new Intent();
-                //MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                //MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                MainActivityIntent.setClass(buyFundActivity.this,MainActivity.class);
-                startActivity(MainActivityIntent);
+            case R.id.fund_redeem:
+                // 使用bundle传递基金代码和名字
+                Bundle bundle = new Bundle();
+                bundle.putString("fundCode", fc);
+                bundle.putString("fundName",fn);
+                bundle.putString("position",position);
+                Intent redeemFund = new Intent(buyFundActivity.this,
+                        RedeemFundActivity.class);
+                redeemFund.putExtras(bundle);
+                this.startActivity(redeemFund);
                 finish();
+                break;
+            case R.id.fund_deleteAll:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder//给builder set各种属性值
+                        .setMessage(getString(R.string.alert_dialog_message))
+                        .setPositiveButton("确定删除", new DialogInterface.OnClickListener() {//确定按钮
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //从数据库取基金数据
+                                DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(),
+                                        "moneyconfig_db", 2);
+                                // 打开数据库
+                                SQLiteDatabase s = dbHelper.getReadableDatabase();
+                                // 以指定fundCode删除三张基金表中全部的相关基金
+                                s.execSQL("delete from fund_buyInfo where fundCode='of" + fc + "'");
+                                s.execSQL("delete from fund_base where fundCode='of" + fc + "'");
+                                s.execSQL("delete from fund_sum where fundCode='of" + fc + "'");
+                                // 关闭数据库
+                                s.close();
 
+                                // 使用bundle更新基金界面
+                                Bundle bundle = new Bundle();
+                                bundle.putBoolean("updateFund", true);
+                                // 打开主界面
+                                Intent MainActivityIntent = new Intent();
+                                //MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                                MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                MainActivityIntent.setClass(buyFundActivity.this,MainActivity.class);
+                                MainActivityIntent.putExtras(bundle);
+                                startActivity(MainActivityIntent);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("我按错了", new DialogInterface.OnClickListener() {//取消按钮
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();//显示AlertDialog
                 break;
             default:
                 break;
@@ -149,11 +189,11 @@ public class buyFundActivity extends Activity {
         //do whatever you want the 'Back' button to do
         //as an example the 'Back' button is set to start a new Activity named 'NewActivity'
         // 打开主界面
-        Intent MainActivityIntent = new Intent();
+        //Intent MainActivityIntent = new Intent();
         //MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         //MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        MainActivityIntent.setClass(buyFundActivity.this,MainActivity.class);
-        startActivity(MainActivityIntent);
+        //MainActivityIntent.setClass(buyFundActivity.this,MainActivity.class);
+        //startActivity(MainActivityIntent);
         finish();
 
         return;

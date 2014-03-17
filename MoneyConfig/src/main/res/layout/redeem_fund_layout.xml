@@ -1,0 +1,161 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- 嵌套表格布局 -->
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:collapseColumns="1"
+        android:stretchColumns="2"
+        android:showDividers="middle">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/textFundRedeemAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="0dp"
+                android:gravity="center"
+                android:textSize="20dp"
+                android:text="@string/textViewFundRedeemMoney" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/editFundRedeemAmount"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:digits="1234567890."
+                android:ems="10"
+                android:hint="@string/editFundRedeemAmount"
+                android:inputType="numberDecimal"
+                android:lines="1"
+                android:maxLength="10"
+                android:singleLine="true" >
+
+                <requestFocus />
+            </EditText>
+        </TableRow>
+        <TableRow
+            android:id="@+id/tableRowBackRate"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/textFundBackRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="0dp"
+                android:gravity="center"
+                android:textSize="20dp"
+                android:text="@string/textViewFundBackRate" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/editFundInsuranceRate"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:digits="1234567890."
+                android:ems="10"
+                android:hint="@string/editFundInsuranceRate"
+                android:inputType="numberDecimal"
+                android:lines="1"
+                android:maxLength="10"
+                android:singleLine="true" >
+                <requestFocus />
+            </EditText>
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/textFundRedeemRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="0dp"
+                android:gravity="center"
+                android:textSize="20dp"
+                android:text="@string/textViewFundRedeemRate" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/editFundRedeemRate"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:digits="1234567890."
+                android:ems="10"
+                android:hint="@string/editFundRedeemRate"
+                android:inputType="numberDecimal"
+                android:lines="1"
+                android:maxLength="10"
+                android:singleLine="true" >
+                <requestFocus />
+            </EditText>
+
+        </TableRow>
+
+    </TableLayout>
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:collapseColumns="2"
+        android:stretchColumns="1">
+        <TableRow>
+
+            <TextView
+                android:id="@+id/textFundRedeemDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="0dp"
+                android:gravity="center"
+                android:textSize="20dp"
+                android:text="@string/textViewFundRedeemDate" />
+
+            <Button
+                android:id="@+id/buttonDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="@string/addDate" />
+
+            <Button
+                android:id="@+id/buttonTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/addTime" />
+
+        </TableRow>
+        </TableLayout>
+
+</LinearLayout>

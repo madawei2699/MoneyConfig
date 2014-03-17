@@ -4,9 +4,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Handler;
 
@@ -23,6 +28,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.http.AndroidHttpClient;
 import android.os.Message;
+import android.text.format.DateFormat;
 
 import com.mdw.moneyconfig.Utils;
 
@@ -97,8 +103,15 @@ public class DataService implements Runnable {
             Cursor cursor = sqliteDatabase.rawQuery("select fundCode from fund_base", null);
             if(0!=cursor.getCount()){
             	// 将光标移动到下一行，从而判断该结果集是否还有下一条数据，如果有则返回true，没有则返回false  
-                while (cursor.moveToNext()) {  
-                	getAndStoreFundData(cursor.getString(cursor.getColumnIndex("fundCode")));
+                while (cursor.moveToNext()) {
+//                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
+//                    try {
+//                        Date updateTime = dateFormat.parse(cursor.getString(cursor.getColumnIndex("update_time")));
+//                        Date now = dateFormat.parse(String.valueOf(Calendar.getInstance().getTime()));
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+                    getAndStoreFundData(cursor.getString(cursor.getColumnIndex("fundCode")));
                 }
             }
     	}

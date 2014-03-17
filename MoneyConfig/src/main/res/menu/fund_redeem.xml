@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+        <item 
+            android:title="@string/ok"
+            android:showAsAction="always"
+            android:icon="@drawable/transparent"
+            android:enabled="false"/>
+
+        <item
+            android:id="@+id/saveFundRedeem"
+            android:title="@string/ok"
+            android:showAsAction="always"
+            android:icon="@drawable/ok"/>
+
+        <item
+            android:title="@string/ok"
+            android:showAsAction="always"
+            android:icon="@drawable/transparent"
+            android:enabled="false"/>
+
+        <item
+            android:id="@+id/searchRate"
+            android:title="@string/searchRate"
+            android:showAsAction="always"
+            android:icon="@drawable/searchrate"/>
+
+</menu>

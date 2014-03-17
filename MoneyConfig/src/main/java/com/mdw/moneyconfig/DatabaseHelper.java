@@ -49,12 +49,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("create table fund_buyInfo(_id integer primary key autoincrement,fundCode varchar(10) not null," +
                 "buyPrice varchar(10),buyAmount varchar(10) default '0',fundRate varchar(10),buyDate varchar(10)," +
                 "fundInsuranceType INTEGER,poundage varchar(10) default '0',buyMoney varchar(10) default '0')");
-        //fund_sum表存储某个基金的概览信息，包括本金、数量、盈亏、盈亏比列、止损、止盈、赎回费率、赎回费
-        //fundCode-基金代码 fundCapital-该基金本金 fundAmount-该基金数量 profitOrLoss-盈亏 PLPercent-盈亏比列 stopLoss-止损 stopProfit-止盈
-        //redeem-赎回费 redeemRate-赎回费率
+        //fund_redeem表存储基金赎回每次赎回信息，包括赎回金额、赎回净值、赎回数量、收费模式、后端费率、赎回费率、赎回日期、手续费
+        //fundCode-基金代码 redeemPrice-赎回价格 redeemAmount-赎回数量 fundRedeemRate-赎回费率
+        //redeemDate-赎回日期 fundInsuranceType-收费模式 poundage-手续费 redeemMoney-赎回金额 backRate-后端费率
+        db.execSQL("create table fund_redeem(_id integer primary key autoincrement,fundCode varchar(10) not null," +
+                "redeemPrice varchar(10),redeemAmount varchar(10) default '0',fundRedeemRate varchar(10),redeemDate varchar(10)," +
+                "fundInsuranceType INTEGER,poundage varchar(10) default '0',redeemMoney varchar(10) default '0',backRate varchar(10) default '0')");
+        //fund_bonus表存储基金每次分红信息，包括分红方式、现金分红金额、分红日期、分红基金数量、分红基金当日净值、每10份基金分红金额
+        //fundCode-基金代码 bonusType-分红方式 bonusMoney-现金分红金额 bonusDate-分红日期 bonusAmount-分红基金数量
+        //bonusPrice-分红基金当日净值 bonusTenPerPrice-每10份基金分红金额
+        //bonusType-0、红利再投 1、现金分红
+        db.execSQL("create table fund_bonus(_id integer primary key autoincrement,fundCode varchar(10) not null," +
+                "bonusType INTEGER,bonusMoney varchar(10) default '0',bonusDate varchar(10),bonusAmount varchar(10) default '0'," +
+                "bonusPrice varchar(10),bonusTenPerPrice varchar(10) default '0')");
+        //fund_sum表存储某个基金的概览信息，包括本金、持仓、今日盈亏、累计盈亏、盈亏幅度、市值、止损、止盈、现金分红总和、赎回金额总和
+        //fundCode-基金代码 buyMoneySum-该基金本金 fund_Position-持仓 fund_ProfitOrLossToday-今日盈亏
+        //fund_ProfitOrLossSum-累计盈亏 fund_ProfitOrLossRate-盈亏幅度 fund_MarketValue-市值
+        //stopLoss-止损 stopProfit-止盈 cashBonusSum-现金分红总和 redeemMoneySum-赎回金额总和
         db.execSQL("create table fund_sum(_id integer primary key autoincrement,fundCode varchar(10) not null unique," +
-                "fundCapital varchar(10),fundAmount varchar(10),profitOrLoss varchar(10),PLPercent varchar(10)," +
-                "stopLoss varchar(10),stopProfit varchar(10),redeem varchar(10),redeemRate varchar(10))");
+                "buyMoneySum varchar(10),fund_Position varchar(10),fund_ProfitOrLossToday varchar(10),fund_ProfitOrLossSum varchar(10)," +
+                "stopLoss varchar(10),stopProfit varchar(10),fund_ProfitOrLossRate varchar(10),fund_MarketValue varchar(10))," +
+                "cashBonusSum varchar(10) default '0',redeemMoneySum varchar(10) default '0'");
 	}
 
 	@Override

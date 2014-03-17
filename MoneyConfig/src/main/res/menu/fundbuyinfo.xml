@@ -1,5 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-        <item 
+    <item
+        android:title="@string/ok"
+        android:showAsAction="always"
+        android:icon="@drawable/transparent"
+        android:enabled="false"/>
+
+    <item
+        android:id="@+id/fund_redeem"
+        android:title="@string/fund_redeem"
+        android:showAsAction="always"
+        android:icon="@drawable/fund_redeem"/>
+
+    <item
+        android:title="@string/ok"
+        android:showAsAction="always"
+        android:icon="@drawable/transparent"
+        android:enabled="false"/>
+    <item
         android:id="@+id/fund_deleteAll"
         android:title="@string/fund_deleteAll"
         android:showAsAction="never"/>
