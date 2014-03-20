@@ -1,4 +1,4 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.fund;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,21 +16,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.mdw.moneyconfig.database.model.fund.FundBuyInfo;
+import com.mdw.moneyconfig.utils.Constant;
+import com.mdw.moneyconfig.database.DataSource;
+import com.mdw.moneyconfig.database.DatabaseHelper;
+import com.mdw.moneyconfig.MainActivity;
+import com.mdw.moneyconfig.utils.MyApplication;
+import com.mdw.moneyconfig.R;
+import com.mdw.moneyconfig.utils.Utils;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -126,8 +134,21 @@ public class RedeemFundActivity extends FragmentActivity implements OnDateSetLis
                         DatabaseHelper dbHelper = new DatabaseHelper(RedeemFundActivity.this, "moneyconfig_db");
                         // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接
                         SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
-                        // 在fund_buyInfo中插入数据
-                        sqliteDatabase.insert("fund_buyInfo", null, values);
+                        // 在fund_redeem中插入数据
+                        sqliteDatabase.insert("fund_redeem", null, values);
+                        // 在基金实时数据表查询基金价格及涨幅
+                        Cursor cursor = sqliteDatabase.query("fund_base", new String[] { "fundCode",
+                                        "price", "updown"},
+                                "fundCode='"+fundCode+"'", null, null, null, null);
+                        cursor.moveToFirst();
+                        String price = cursor.getString(cursor.getColumnIndex("price"));
+                        String updown = cursor.getString(cursor.getColumnIndex("updown"));
+                        // 计算基金概览数据并封装结果数据
+                        ContentValues cv = calcFundSumRedeem(fundCode,price,updown);
+                        //更新基金概率表
+                        sqliteDatabase.update("fund_sum",cv,"fundCode='"+fundCode+"'",null);
+                        //关闭游标
+                        cursor.close();
                         // 关闭数据库
                         sqliteDatabase.close();
                         // 使用bundle更新基金界面
@@ -258,6 +279,13 @@ public class RedeemFundActivity extends FragmentActivity implements OnDateSetLis
         switch (item.getItemId()) {
             case R.id.saveFundRedeem:
                 getEditValue();
+                if(Double.parseDouble(redeemAmount)>Double.parseDouble(position)){
+                    //提示赎回份数不能大于持仓份数
+                    Toast toast=Toast.makeText(RedeemFundActivity.this,
+                            getResources().getString(R.string.errorRedeemAmount), Toast.LENGTH_SHORT);
+                    toast.show();
+                    break;
+                }
                 // 用正则表达式判断输入基金代码是否正确
                 if(fundCode.matches("^of\\d{6,6}")){
                     pd = ProgressDialog.show(RedeemFundActivity.this, "查询历史净值", "加载中，请稍后……");
@@ -318,33 +346,79 @@ public class RedeemFundActivity extends FragmentActivity implements OnDateSetLis
         values = new ContentValues();
         values.put("fundCode", fundCode);
         values.put("fundInsuranceType", fundInsuranceType);
-        values.put("buyPrice",buyPrice);
-        values.put("buyDate", buyDate);
-        if("".equals(fundRate)){
-            values.put("fundRate", "0");
+        values.put("redeemPrice",redeemPrice);
+        values.put("redeemDate", redeemDate);
+        if("".equals(redeemAmount)){
+            values.put("redeemAmount", "0");
         }else{
-            values.put("fundRate", fundRate);
+            values.put("redeemAmount", redeemAmount);
         }
-        if("".equals(buyMoney)){
-            values.put("buyMoney", "0");
+        if("".equals(fundBackRate)){
+            values.put("fundBackRate", "0");
         }else{
-            values.put("buyMoney", buyMoney);
+            values.put("fundBackRate", fundBackRate);
         }
-        // 如果是前端收费,则计算购买数量
-        // 净申购金额＝申购金额/（1＋申购费率）
-        // 申购费用＝申购金额－净申购金额
-        // 申购份额＝净申购金额/T日申购价格
-        // 注：净申购金额及申购份额的计算结果以四舍五入的方法保留小数点后两位。
-        if(fundInsuranceType == 0 && (!fundRate.equals(""))){
-            Double jsgje = Double.parseDouble(buyMoney)/(1+Double.parseDouble(fundRate)/100);
-            Double sgfy = Double.parseDouble(buyMoney) - jsgje;
-            Double sgfe = jsgje/Double.parseDouble(buyPrice);
-            values.put("poundage",String.format("%.2f", sgfy));
-            values.put("buyAmount",String.format("%.2f", sgfe));
-        }else if(fundInsuranceType == 1){
-            Double hdsgfe = Double.parseDouble(buyMoney)/Double.parseDouble(buyPrice);
-            values.put("poundage","0");
-            values.put("buyAmount",String.format("%.2f", hdsgfe));
+        if("".equals(fundRedeemRate)){
+            values.put("fundRedeemRate", "0");
+        }else{
+            values.put("fundRedeemRate", fundRedeemRate);
+        }
+        // 如果是前端收费,则如下公式
+        // 赎回总额=赎回份额×赎回当日基金份额净值
+        // 赎回费用=赎回总额×赎回费率
+        // 赎回金额=赎回总额－赎回费用
+        // 如果是后端收费,则如下公式
+        // 赎回总额＝赎回份额×赎回当日基金份额净值
+        // 后端申购费用＝赎回份额×申购当日基金份额净值×后端申购费率
+        // 赎回费用=赎回总额×赎回费率
+        // 赎回金额=赎回总额－赎回费用
+        Double shze,shfy,shje;
+        Double hdsgfy = 0.0;
+        shze = Double.parseDouble(redeemAmount)*Double.parseDouble(redeemPrice);
+        shfy = shze*Double.parseDouble(fundRedeemRate)/100;
+        if((fundInsuranceType == 1) && (!fundBackRate.equals(""))){
+            List<FundBuyInfo> fbis = DataSource.queryFundBuyInfoByCode(fundCode);
+            //以购买日期排序，购买早的排在前面
+            Collections.sort(fbis);
+            //遍历列表
+            Iterator it = fbis.iterator();
+            Double avaliableRedeem = 0.0;
+            Double ra = Double.parseDouble(redeemAmount);
+            Double fundBuyInfo_RedeemAmount = 0.0;
+            FundBuyInfo fbi;
+            // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的
+            DatabaseHelper dbHelper = new DatabaseHelper(RedeemFundActivity.this, "moneyconfig_db");
+            // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接
+            SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
+            while ((ra>0)&&it.hasNext()){
+                ContentValues v = new ContentValues();
+                fbi = (FundBuyInfo)it.next();
+                avaliableRedeem = Double.parseDouble(fbi.getBuyAmount())
+                        -Double.parseDouble(fbi.getRedeemAmount());
+                if(avaliableRedeem!=0){
+                    if(avaliableRedeem<ra){
+                        ra -= avaliableRedeem;
+                        fundBuyInfo_RedeemAmount = Double.parseDouble(fbi.getBuyAmount());
+                    }else {
+                        fundBuyInfo_RedeemAmount = Double.parseDouble(fbi.getRedeemAmount())
+                                + ra;
+                        ra=0.0;
+                    }
+                    //后端申购费率
+                    hdsgfy += fundBuyInfo_RedeemAmount*Double.parseDouble(fbi.getBuyPrice())*Double.parseDouble(fundBackRate)/100;
+                    v.put("redeemAmount",String.valueOf(fundBuyInfo_RedeemAmount));
+                    sqliteDatabase.update("fund_buyInfo",v,"_id='"+String.valueOf(fbi.getId())+"'",null);
+                }
+            }
+            //关闭数据库
+            sqliteDatabase.close();
+            shje = shze - shfy - hdsgfy;
+            values.put("poundage",String.format("%.2f", shfy+hdsgfy));
+            values.put("redeemMoney",String.format("%.2f", shje));
+        }else if(fundInsuranceType == 0){
+            shje = shze -shfy;
+            values.put("poundage",shfy);
+            values.put("redeemMoney",String.format("%.2f", shje));
         }
     }
 
@@ -381,6 +455,82 @@ public class RedeemFundActivity extends FragmentActivity implements OnDateSetLis
             }
         });
         fundRateDialog.show();
+    }
+
+    /**
+     * 计算基金今日盈亏、累计盈亏、盈亏幅度、市值、持仓
+     * 累计盈亏=基金累计赎回资金-累计购买资金+当前净值*持仓份额+累计现金分红
+     * @return
+     */
+    public ContentValues calcFundSumRedeem(String fundCode,String price,String updown){
+        Double doublePrice = Double.parseDouble(price); //现价
+        Double doubleUpdown = Double.parseDouble(updown); //涨跌
+        Double buyAmountSum = 0.0; //基金持仓
+        Double poundageSum = 0.0;  //手续费总和
+        Double buyMoneySum = 0.0;  //初始金额总和
+        Double fund_ProfitOrLossToday = 0.0; //今日盈亏
+        Double fund_ProfitOrLossSum = 0.0; //累计盈亏
+        Double fund_ProfitOrLossRate = 0.0; //盈亏幅度
+        Double fund_MarketValue = 0.0; //市值
+        Double fund_Position = 0.0; //持仓
+        Double fund_RedeemMoneySum = 0.0; //基金累计赎回资金
+        Double fund_BonusMoneySum = 0.0; //累计现金分红
+
+        //从数据库取基金数据
+        DatabaseHelper dbHelper = new DatabaseHelper(MyApplication.getInstance(),
+                "moneyconfig_db", 2);
+        // 得到一个只读的SQLiteDatabase对象
+        SQLiteDatabase sqliteDatabase = dbHelper.getReadableDatabase();
+        Cursor fundSumCursor = sqliteDatabase.query("fund_sum", new String[]{"fund_Position",
+                        "buyMoneySum"},
+                "fundCode='"+fundCode+"'", null, null, null, null);
+        fundSumCursor.moveToFirst();
+        //计算基金本金、手续费、持仓
+        buyMoneySum = Double.parseDouble(fundSumCursor.getString(
+                fundSumCursor.getColumnIndex("buyMoneySum")));
+        buyAmountSum = Double.parseDouble(fundSumCursor.getString(
+                fundSumCursor.getColumnIndex("fund_Position"))) - Double.parseDouble(redeemAmount);
+
+        Cursor fundRedeemCursor = sqliteDatabase.query("fund_redeem", null,
+                "fundCode='"+fundCode+"'", null, null, null, null);
+
+        //计算基金累计赎回资金
+        while (fundRedeemCursor.moveToNext()){
+            fund_RedeemMoneySum += Double.parseDouble(fundRedeemCursor.getString(
+                    fundRedeemCursor.getColumnIndex("redeemMoney")));
+        }
+
+        Cursor fundBonusCursor = sqliteDatabase.query("fund_bonus", null,
+                "fundCode='"+fundCode+"'", null, null, null, null);
+        //计算累计现金分红
+        while (fundBonusCursor.moveToNext()){
+            fund_BonusMoneySum += Double.parseDouble(fundBonusCursor.getString(
+                    fundBonusCursor.getColumnIndex("bonusMoney")));
+        }
+
+        fund_Position = buyAmountSum;
+        fund_ProfitOrLossToday = doubleUpdown*fund_Position;
+        fund_MarketValue = doublePrice*fund_Position;
+        //累计盈亏=基金累计赎回资金-累计购买资金+当前净值*持仓份额+累计现金分红
+        fund_ProfitOrLossSum = fund_MarketValue-buyMoneySum+fund_RedeemMoneySum+fund_BonusMoneySum;
+        fund_ProfitOrLossRate = fund_ProfitOrLossSum/buyMoneySum;
+        //封装返回数据
+        ContentValues value = new ContentValues();
+        value.put("fund_Position",String.format("%.2f",fund_Position));
+        value.put("fund_ProfitOrLossToday",String.format("%.2f",fund_ProfitOrLossToday));
+        value.put("fund_MarketValue",String.format("%.2f",fund_MarketValue));
+        value.put("fund_ProfitOrLossSum",String.format("%.2f",fund_ProfitOrLossSum));
+        value.put("fund_ProfitOrLossRate",String.format("%.2f",fund_ProfitOrLossRate));
+        value.put("buyMoneySum",String.format("%.2f",buyMoneySum));
+        value.put("cashBonusSum",String.format("%.2f",fund_BonusMoneySum));
+        value.put("redeemMoneySum",String.format("%.2f",fund_RedeemMoneySum));
+        // 关闭数据库
+        sqliteDatabase.close();
+        // 关闭游标
+        fundRedeemCursor.close();
+        fundBonusCursor.close();
+        fundSumCursor.close();
+        return value;
     }
 
 }

@@ -1,9 +1,15 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.fund;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mdw.moneyconfig.MyHScrollView.OnScrollChangedListener;
+import com.mdw.moneyconfig.database.DataSource;
+import com.mdw.moneyconfig.database.DatabaseHelper;
+import com.mdw.moneyconfig.utils.MyApplication;
+import com.mdw.moneyconfig.utils.MyHScrollView;
+import com.mdw.moneyconfig.utils.MyHScrollView.OnScrollChangedListener;
+import com.mdw.moneyconfig.R;
+
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
@@ -68,7 +74,7 @@ public class FundFragment extends Fragment {
                 bundle.putString("fundName",fn);
                 bundle.putString("position",sPosition);
                 Intent fundBuyInfo = new Intent(FundFragment.this.getActivity(),
-                        buyFundActivity.class);
+                        fundInfoActivity.class);
                 fundBuyInfo.putExtras(bundle);
                 FundFragment.this.startActivity(fundBuyInfo);
                 //FundFragment.this.getActivity().finish();
@@ -207,19 +213,37 @@ public class FundFragment extends Fragment {
             holder.scope.setText(cursor.getString(cursor.getColumnIndex("scope")));
             holder.date.setText(cursor.getString(cursor.getColumnIndex("date")));
             // 获取基金概览表数据
-            ContentValues cv = DataSource.queryFundSumByCode("of"+fundCode);
-            // 设置今日盈亏
-            holder.fund_ProfitOrLossToday.setText(cv.getAsString("fund_ProfitOrLossToday"));
-            // 设置累计盈亏
-            holder.fund_ProfitOrLossSum.setText(cv.getAsString("fund_ProfitOrLossSum"));
-            // 设置盈亏幅度
-            holder.fund_ProfitOrLossRate.setText(cv.getAsString("fund_ProfitOrLossRate"));
-            // 设置市值
-            holder.fund_MarketValue.setText(cv.getAsString("fund_MarketValue"));
-            // 设置持仓
-            holder.fund_Position.setText(cv.getAsString("fund_Position"));
-            // 设置本金
-            holder.fund_BuyMoneySum.setText(cv.getAsString("buyMoneySum"));
+            ContentValues cv = DataSource.queryFundSumByCode("of" + fundCode);
+            if(cv.size()!=0){
+                // 设置今日盈亏
+                holder.fund_ProfitOrLossToday.setText(cv.getAsString("fund_ProfitOrLossToday"));
+                // 设置累计盈亏
+                holder.fund_ProfitOrLossSum.setText(cv.getAsString("fund_ProfitOrLossSum"));
+                // 设置盈亏幅度
+                holder.fund_ProfitOrLossRate.setText(cv.getAsString("fund_ProfitOrLossRate"));
+                // 设置市值
+                holder.fund_MarketValue.setText(cv.getAsString("fund_MarketValue"));
+                // 设置持仓
+                holder.fund_Position.setText(cv.getAsString("fund_Position"));
+                // 设置本金
+                holder.fund_BuyMoneySum.setText(cv.getAsString("buyMoneySum"));
+                // 基金盈利大于0，则颜色设置为红色，否则为绿色
+                if(Double.parseDouble(cv.getAsString("fund_ProfitOrLossToday"))>0){
+                    holder.fund_ProfitOrLossToday.setTextColor(getResources().getColor(R.color.red));
+                }else {
+                    holder.fund_ProfitOrLossToday.setTextColor(getResources().getColor(R.color.green));
+                }
+                if(Double.parseDouble(cv.getAsString("fund_ProfitOrLossSum"))>0){
+                    holder.fund_ProfitOrLossSum.setTextColor(getResources().getColor(R.color.red));
+                }else {
+                    holder.fund_ProfitOrLossSum.setTextColor(getResources().getColor(R.color.green));
+                }
+                if(Double.parseDouble(cv.getAsString("fund_ProfitOrLossRate"))>0){
+                    holder.fund_ProfitOrLossRate.setTextColor(getResources().getColor(R.color.red));
+                }else {
+                    holder.fund_ProfitOrLossRate.setTextColor(getResources().getColor(R.color.green));
+                }
+            }
             // 设置字体大小
             holder.fundCode.setTextSize(15);
             holder.price.setTextSize(20);
@@ -241,21 +265,6 @@ public class FundFragment extends Fragment {
                 holder.price.setTextColor(getResources().getColor(R.color.green));
                 holder.updown.setTextColor(getResources().getColor(R.color.green));
                 holder.scope.setTextColor(getResources().getColor(R.color.green));
-            }
-            if(Double.parseDouble(cv.getAsString("fund_ProfitOrLossToday"))>0){
-                holder.fund_ProfitOrLossToday.setTextColor(getResources().getColor(R.color.red));
-            }else {
-                holder.fund_ProfitOrLossToday.setTextColor(getResources().getColor(R.color.green));
-            }
-            if(Double.parseDouble(cv.getAsString("fund_ProfitOrLossSum"))>0){
-                holder.fund_ProfitOrLossSum.setTextColor(getResources().getColor(R.color.red));
-            }else {
-                holder.fund_ProfitOrLossSum.setTextColor(getResources().getColor(R.color.green));
-            }
-            if(Double.parseDouble(cv.getAsString("fund_ProfitOrLossRate"))>0){
-                holder.fund_ProfitOrLossRate.setTextColor(getResources().getColor(R.color.red));
-            }else {
-                holder.fund_ProfitOrLossRate.setTextColor(getResources().getColor(R.color.green));
             }
 			return convertView;
 		}

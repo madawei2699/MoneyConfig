@@ -1,4 +1,4 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.database.model.fund;
 
 /**
  * 基金赎回记录实体类

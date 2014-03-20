@@ -1,11 +1,12 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.config;
 
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.mdw.moneyconfig.DataService;
+
+import com.mdw.moneyconfig.R;
 
 public class ConfigFragment extends Fragment {
 

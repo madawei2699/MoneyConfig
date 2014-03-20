@@ -72,5 +72,6 @@
     <string name="textViewFundRedeemRate">赎回费率</string>
     <string name="editFundRedeemRate">不用输入%</string>
     <string name="fund_BuyMoneySum">本金</string>
+    <string name="errorRedeemAmount">赎回份数不能大于持仓份数!</string>
 
 </resources>

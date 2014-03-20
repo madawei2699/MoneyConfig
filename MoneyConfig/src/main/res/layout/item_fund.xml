@@ -16,7 +16,7 @@
         android:gravity="center_vertical"
         android:text="@string/fund_name" />
 
-    <com.mdw.moneyconfig.InterceptScrollContainer
+    <com.mdw.moneyconfig.utils.InterceptScrollContainer
         android:id="@+id/fund_scroollContainter"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:layout_toRightOf="@id/fund_textView1"
         android:focusable="false" >
 
-        <com.mdw.moneyconfig.MyHScrollView
+        <com.mdw.moneyconfig.utils.MyHScrollView
             android:id="@+id/fund_horizontalScrollView1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                     android:text="@string/fund_date"/>
 
             </LinearLayout>
-        </com.mdw.moneyconfig.MyHScrollView>
-    </com.mdw.moneyconfig.InterceptScrollContainer>
+        </com.mdw.moneyconfig.utils.MyHScrollView>
+    </com.mdw.moneyconfig.utils.InterceptScrollContainer>
 
 </RelativeLayout>

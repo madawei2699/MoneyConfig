@@ -1,8 +1,8 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.database.model.fund;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * 基金购买记录实体类
@@ -10,7 +10,9 @@ import android.database.sqlite.SQLiteDatabase;
  *
  */
 
-public class FundBuyInfo {
+public class FundBuyInfo implements Comparable<FundBuyInfo>{
+    //id
+    Integer id;
     //基金代码
     String fundCode;
     //购买金额
@@ -27,6 +29,24 @@ public class FundBuyInfo {
     Integer fundInsuranceType;
     //费率
     String fundRate;
+    //赎回数量
+    String redeemAmount;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getRedeemAmount() {
+        return redeemAmount;
+    }
+
+    public void setRedeemAmount(String redeemAmount) {
+        this.redeemAmount = redeemAmount;
+    }
 
     public String getFundCode() {
         return fundCode;
@@ -90,5 +110,17 @@ public class FundBuyInfo {
 
     public void setFundRate(String fundRate) {
         this.fundRate = fundRate;
+    }
+
+    @Override
+    public int compareTo(FundBuyInfo fundBuyInfo) {
+        DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+        int i=0;
+        try {
+            i = format1.parse(this.buyDate).compareTo(format1.parse(fundBuyInfo.getBuyDate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return i;
     }
 }

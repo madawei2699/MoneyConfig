@@ -1,6 +1,5 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

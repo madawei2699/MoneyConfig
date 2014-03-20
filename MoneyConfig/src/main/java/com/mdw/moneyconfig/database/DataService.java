@@ -1,26 +1,4 @@
-package com.mdw.moneyconfig;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.http.AndroidHttpClient;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
+package com.mdw.moneyconfig.database;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,52 +9,114 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.http.AndroidHttpClient;
+import android.os.Message;
+
+import com.mdw.moneyconfig.utils.Constant;
+import com.mdw.moneyconfig.utils.MyApplication;
+import com.mdw.moneyconfig.utils.Utils;
+
 /**
- * 数据查询类，从新浪财经接口获取基金历史净值数据
+ * 数据处理类，从新浪财经接口获取股票基金数据存储至SQLite中
  * @author zFish
  *
  */
 
-public class FundPriceService implements Runnable {
+public class DataService implements Runnable {
 
-    private Handler handler;
-    // 基金代码
-    private String fundCode;
-    // 净值日期
-    private String fundDate;
-    //基金抓取数据
+    private android.os.Handler handler;
+
+	//基金抓取数据
     private String []fundData;
+    //股票抓取数据
+    private String []stockData;
+    //基金代码
+    private String fundCode="";
+    //股票代码
+    private String stockCode="";
+    //是否更新股票基金数据
+    private boolean updateOrNot=false;
     // 创建ContentValues对象
     ContentValues values = new ContentValues();
     // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的
     DatabaseHelper dbHelper;
 
+    public DataService(String code) {
+    	//如果代码包含of则为开放式基金，如果包含sz或sh则为股票
+    	if(code.contains("of")){
+    		this.fundCode = code;
+    	}else if(code.contains("sz") || code.contains("sh")){
+    		this.stockCode = code;
+    	}
+        dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
+    }
 
-    public FundPriceService(String fundCode,String fundDate, Handler handler){
-        this.fundCode = fundCode;
-        this.fundDate = fundDate;
+    public DataService(ContentValues values) {
+        //如果代码包含of则为开放式基金，如果包含sz或sh则为股票
+        this.values = values;
+        this.fundCode = values.getAsString("fundCode");
+        dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
+    }
+
+    public DataService(ContentValues values, android.os.Handler handler) {
+        //如果代码包含of则为开放式基金，如果包含sz或sh则为股票
+        this.values = values;
+        this.fundCode = values.getAsString("fundCode");
         this.handler = handler;
-        dbHelper = new DatabaseHelper(MyApplication.getInstance(),
-                "moneyconfig_db", 2);
+        dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
+    }
+
+    //更新基金股票数据
+    public DataService(android.os.Handler handler){
+        this.handler = handler;
+    	this.updateOrNot=true;
+        dbHelper = new DatabaseHelper(MyApplication.getInstance(), "moneyconfig_db");
     }
 
     @Override
     public void run() {
+
+        if(!fundCode.equals("")){
+    		//基金代码不为空，则插入或更新基金数据
+    		getAndStoreFundData(fundCode);
+    	}else if(!stockCode.equals("")){
+    		//股票代码不为空，则插入或更新基金数据
+    		getAndStoreStockData(stockCode);
+    	}else if(updateOrNot){
+            SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
+            Cursor cursor = sqliteDatabase.rawQuery("select fundCode from fund_base", null);
+            if(0!=cursor.getCount()){
+            	// 将光标移动到下一行，从而判断该结果集是否还有下一条数据，如果有则返回true，没有则返回false  
+                while (cursor.moveToNext()) {
+//                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
+//                    try {
+//                        Date updateTime = dateFormat.parse(cursor.getString(cursor.getColumnIndex("update_time")));
+//                        Date now = dateFormat.parse(String.valueOf(Calendar.getInstance().getTime()));
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+                    getAndStoreFundData(cursor.getString(cursor.getColumnIndex("fundCode")));
+                }
+            }
+    	}
         if(handler != null){
             Message m = new Message();
-            Bundle b = new Bundle();
-            m.what = Constant.FUNDPRICEOK;
-            if((!fundCode.equals(""))&&(!fundDate.equals(""))&&Utils.detectNetwork()){
-                //基金代码不为空，则插入或更新基金数据
-                getAndStoreFundData(fundCode);
-                //查询基金历史净值
-                b.putString("jjjz",getFundPrice());
-            }
-            m.setData(b);
+            m.what = Constant.DATASERVICEOK;
             handler.sendMessage(m);// 执行耗时的方法之后发送消给handler
         }
-    }
 
+    }
     /**
      * 发送Http请求到Web站点
      * @param path Web站点请求地址
@@ -102,7 +142,7 @@ public class FundPriceService implements Runnable {
             UrlEncodedFormEntity entity=new UrlEncodedFormEntity(list, encode);
             //使用HttpPost请求方式
             HttpPost httpPost=new HttpPost(path);
-            //设置请求参数到Form中。
+            //设置请求参数到Form中
             httpPost.setEntity(entity);
             //执行请求，并获得响应数据
             HttpResponse httpResponse= client.execute(httpPost);
@@ -123,12 +163,12 @@ public class FundPriceService implements Runnable {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } finally{
-            //关闭连接
+        	//关闭连接
             client.close();
         }
-
+        
         return "";
-    }
+    }                    
     /**
      * 把Web站点返回的响应流转换为字符串格式
      * @param inputStream 响应流
@@ -136,7 +176,7 @@ public class FundPriceService implements Runnable {
      * @return 转换后的字符串
      */
     private  String changeInputStream(InputStream inputStream,
-                                      String encode) {
+            String encode) { 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte[] data = new byte[1024];
         int len = 0;
@@ -144,24 +184,23 @@ public class FundPriceService implements Runnable {
         if (inputStream != null) {
             try {
                 while ((len = inputStream.read(data)) != -1) {
-                    outputStream.write(data,0,len);
+                    outputStream.write(data,0,len);                    
                 }
                 result=new String(outputStream.toByteArray(),encode);
-
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return result;
     }
-
     /**
      * 获取并存储基金数据,如果code不为空且网络可用则发送http请求获取数据
      * @return
      */
     public void getAndStoreFundData(String code){
-        if((!code.equals(""))&&Utils.detectNetwork()){
-            // 设置访问的Web站点
+    	if((!code.equals(""))&&Utils.detectNetwork()){
+    		// 设置访问的Web站点
             String path = Utils.getPropertiesURL("url") + code;
             //设置Http请求参数
             Map<String, String> params = new HashMap<String, String>();
@@ -170,59 +209,33 @@ public class FundPriceService implements Runnable {
             String data = result.split("=")[1].replaceAll("\"", "").replaceAll(";", "").replaceAll("\\n","");
             if(!data.equals(""))
             {
-                fundData = data.split(",");
+            	fundData = data.split(",");
 
-                // 向该对象中插入键值对，其中键是列名，值是希望插入到这一列的值，值必须和数据库当中的数据类型一致
+                // 向该对象中插入键值对，其中键是列名，值是希望插入到这一列的值，值必须和数据库当中的数据类型一致  
                 values.put("price", fundData[1]);
                 // 保留四位小数
                 values.put("updown", String.format("%1$.4f", Double.parseDouble(fundData[1]) -
                         Double.parseDouble(fundData[3])));
-                values.put("scope", fundData[4]);
+                values.put("scope", fundData[4]);  
                 values.put("date", fundData[5]);
-                // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接
+                // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接  
                 SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
                 Cursor cursor = sqliteDatabase.rawQuery("select fundCode from fund_base where fundCode='" + code + "'", null);
                 // 更新基金数据
                 if(0!=cursor.getCount()){
                     values.put("name", fundData[0]);
-                    //更新基金数据
-                    sqliteDatabase.update("fund_base", values, "fundCode="+"'"+code+"'", null);
-                }else {
-                    values.put("name", fundData[0]);
-                    values.put("fundCode", code);
-                    //插入基金数据
-                    sqliteDatabase.insert("fund_base",null,values);
+                	//更新基金数据
+                	sqliteDatabase.update("fund_base", values, "fundCode="+"'"+code+"'", null);
                 }
                 sqliteDatabase.close();
             }
-        }
+    	}
     }
-
     /**
-     * 获取基金指定日期历史净值
+     * 获取并存储股票数据
      * @return
      */
-    public String getFundPrice(){
-        String jjjz = "";
-        // 设置访问的Web站点
-        String path = Utils.getPropertiesURL("SearchPriceByDate").replaceAll("fundCode",fundCode.replace("of","")).replaceAll("fundDate",fundDate);
-        //设置Http请求参数
-        Map<String, String> params = new HashMap<String, String>();
-        String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
-        //解析JSON格式数据并检查数据是否为空
-        JSONObject jo = null;
-        try {
-            jo = new JSONObject(result.replaceAll("\"","\\\""));
-            JSONObject jo_result = (JSONObject)jo.get("result");
-            JSONObject jo_data = (JSONObject)jo_result.get("data");
-            if(jo_data.get("total_num").toString().equals("1")){
-                JSONArray ja_data = (JSONArray) jo_data.get("data");
-                JSONObject o = (JSONObject)ja_data.get(0);
-                jjjz = o.getString("jjjz");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jjjz;
+    public void getAndStoreStockData(String code){
+    	
     }
 }

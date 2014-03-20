@@ -1,9 +1,11 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.stock;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mdw.moneyconfig.MyHScrollView.OnScrollChangedListener;
+import com.mdw.moneyconfig.utils.MyHScrollView;
+import com.mdw.moneyconfig.utils.MyHScrollView.OnScrollChangedListener;
+import com.mdw.moneyconfig.R;
 
 import android.app.Fragment;
 import android.content.Context;

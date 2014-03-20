@@ -1,4 +1,4 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.fund;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -20,11 +20,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.mdw.moneyconfig.database.DatabaseHelper;
+import com.mdw.moneyconfig.MainActivity;
+import com.mdw.moneyconfig.utils.MyApplication;
+import com.mdw.moneyconfig.utils.MyHScrollView;
+import com.mdw.moneyconfig.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class buyFundActivity extends Activity {
+public class fundInfoActivity extends Activity {
 
     Cursor cursor;
     MyAdapter myAdapter;
@@ -80,7 +86,7 @@ public class buyFundActivity extends Activity {
 //                R.id.fundBuyInfoBuyPriceLV,R.id.fundBuyInfoPoundageLV,R.id.fundBuyInfoDateLV});
 //        swipeDismissListView.setAdapter(cursorAdapter);
 
-        myAdapter = new MyAdapter(buyFundActivity.this, R.layout.item_fund_buyinfo);
+        myAdapter = new MyAdapter(fundInfoActivity.this, R.layout.item_fund_buyinfo);
 //        swipeDismissListView.setAdapter(myAdapter);
         lv.setAdapter(myAdapter);
 
@@ -125,7 +131,7 @@ public class buyFundActivity extends Activity {
                 bundle.putString("fundCode", fc);
                 bundle.putString("fundName",fn);
                 bundle.putString("position",position);
-                Intent redeemFund = new Intent(buyFundActivity.this,
+                Intent redeemFund = new Intent(fundInfoActivity.this,
                         RedeemFundActivity.class);
                 redeemFund.putExtras(bundle);
                 this.startActivity(redeemFund);
@@ -143,10 +149,12 @@ public class buyFundActivity extends Activity {
                                         "moneyconfig_db", 2);
                                 // 打开数据库
                                 SQLiteDatabase s = dbHelper.getReadableDatabase();
-                                // 以指定fundCode删除三张基金表中全部的相关基金
+                                // 以指定fundCode删除五张基金表中全部的相关基金
                                 s.execSQL("delete from fund_buyInfo where fundCode='of" + fc + "'");
                                 s.execSQL("delete from fund_base where fundCode='of" + fc + "'");
                                 s.execSQL("delete from fund_sum where fundCode='of" + fc + "'");
+                                s.execSQL("delete from fund_redeem where fundCode='of" + fc + "'");
+                                s.execSQL("delete from fund_bonus where fundCode='of" + fc + "'");
                                 // 关闭数据库
                                 s.close();
 
@@ -157,7 +165,7 @@ public class buyFundActivity extends Activity {
                                 Intent MainActivityIntent = new Intent();
                                 //MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                                 MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                MainActivityIntent.setClass(buyFundActivity.this,MainActivity.class);
+                                MainActivityIntent.setClass(fundInfoActivity.this,MainActivity.class);
                                 MainActivityIntent.putExtras(bundle);
                                 startActivity(MainActivityIntent);
                                 finish();
@@ -192,7 +200,7 @@ public class buyFundActivity extends Activity {
         //Intent MainActivityIntent = new Intent();
         //MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         //MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //MainActivityIntent.setClass(buyFundActivity.this,MainActivity.class);
+        //MainActivityIntent.setClass(fundInfoActivity.this,MainActivity.class);
         //startActivity(MainActivityIntent);
         finish();
 
@@ -232,7 +240,7 @@ public class buyFundActivity extends Activity {
         public View getView(int position, View convertView, ViewGroup parentView) {
             ViewHolder holder = null;
             if (convertView == null) {
-                synchronized (buyFundActivity.this) {
+                synchronized (fundInfoActivity.this) {
                     convertView = mInflater.inflate(id_row_layout, null);
                     holder = new ViewHolder();
 

@@ -1,8 +1,16 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.mdw.moneyconfig.utils.MyApplication;
+import com.mdw.moneyconfig.database.model.fund.FundBase;
+import com.mdw.moneyconfig.database.model.fund.FundBuyInfo;
+import com.mdw.moneyconfig.database.model.fund.FundRedeem;
+import com.mdw.moneyconfig.database.model.fund.FundSum;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,11 +43,15 @@ public class DataSource {
      * @return
      */
     public static List<FundBuyInfo> queryFundBuyInfoByCode(String fundCode){
-        sqliteDatabase = dbHelper.getWritableDatabase();
-        FundBuyInfo fb = new FundBuyInfo();
+        sqliteDatabase = dbHelper.getReadableDatabase();
+        FundBuyInfo fb;
+        //初始化列表
+        fundBuyInfo = new ArrayList<FundBuyInfo>();
         cursor = sqliteDatabase.query("fund_buyInfo", null,
-                "fundCode='of"+fundCode+"'", null, null, null, null);
+                "fundCode='"+fundCode+"'", null, null, null, null);
         while (cursor.moveToNext()){
+            fb = new FundBuyInfo();
+            fb.setId(cursor.getInt(cursor.getColumnIndex("_id")));
             fb.setBuyAmount(cursor.getString(cursor.getColumnIndex("buyAmount")));
             fb.setBuyDate(cursor.getString(cursor.getColumnIndex("buyDate")));
             fb.setBuyMoney(cursor.getString(cursor.getColumnIndex("buyMoney")));
@@ -48,6 +60,7 @@ public class DataSource {
             fb.setFundInsuranceType(cursor.getInt(cursor.getColumnIndex("fundInsuranceType")));
             fb.setFundRate(cursor.getString(cursor.getColumnIndex("fundRate")));
             fb.setPoundage(cursor.getString(cursor.getColumnIndex("poundage")));
+            fb.setRedeemAmount(cursor.getString(cursor.getColumnIndex("redeemAmount")));
             fundBuyInfo.add(fb);
         }
         cursor.close();
@@ -62,15 +75,19 @@ public class DataSource {
      */
     public static ContentValues queryFundSumByCode(String fundCode){
         cv = new ContentValues();
+        sqliteDatabase = dbHelper.getReadableDatabase();
         cursor = sqliteDatabase.query("fund_sum", null,
-                "fundCode='of"+fundCode+"'", null, null, null, null);
-        cv.put("fund_ProfitOrLossToday",cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossToday")));
-        cv.put("fund_ProfitOrLossSum",cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossSum")));
-        cv.put("fund_ProfitOrLossRate",cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossRate")));
-        cv.put("fund_MarketValue",cursor.getString(cursor.getColumnIndex("fund_MarketValue")));
-        cv.put("fund_Position",cursor.getString(cursor.getColumnIndex("fund_Position")));
-        cv.put("buyMoneySum",cursor.getString(cursor.getColumnIndex("buyMoneySum")));
+                "fundCode='"+fundCode+"'", null, null, null, null);
+        if(cursor.moveToNext()){
+            cv.put("fund_ProfitOrLossToday",cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossToday")));
+            cv.put("fund_ProfitOrLossSum",cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossSum")));
+            cv.put("fund_ProfitOrLossRate",cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossRate")));
+            cv.put("fund_MarketValue",cursor.getString(cursor.getColumnIndex("fund_MarketValue")));
+            cv.put("fund_Position",cursor.getString(cursor.getColumnIndex("fund_Position")));
+            cv.put("buyMoneySum",cursor.getString(cursor.getColumnIndex("buyMoneySum")));
+        }
         cursor.close();
+        sqliteDatabase.close();
         return cv;
     }
 

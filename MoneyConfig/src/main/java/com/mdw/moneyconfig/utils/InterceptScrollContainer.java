@@ -1,4 +1,4 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;

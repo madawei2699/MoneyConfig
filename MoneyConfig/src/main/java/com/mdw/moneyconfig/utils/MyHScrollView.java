@@ -1,4 +1,4 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.utils;
 
 import java.util.ArrayList;
 import java.util.List;

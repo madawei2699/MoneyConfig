@@ -1,4 +1,4 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.fund;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -26,14 +26,15 @@ import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.mdw.moneyconfig.utils.Constant;
+import com.mdw.moneyconfig.database.DatabaseHelper;
+import com.mdw.moneyconfig.MainActivity;
+import com.mdw.moneyconfig.utils.MyApplication;
+import com.mdw.moneyconfig.R;
+import com.mdw.moneyconfig.utils.Utils;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -105,6 +106,9 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
 
     // 创建ContentValues对象
     ContentValues values;
+
+    //购买数量
+    Double buyAmount = 0.0;
 	
 	//基金收费模式
     private String[] fundInsuranceRate = new String[] {"前端","后端"};
@@ -136,6 +140,7 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                         Cursor cursor = sqliteDatabase.query("fund_base", new String[] { "fundCode",
                                         "price", "updown"},
                                 "fundCode='"+fundCode+"'", null, null, null, null);
+                        cursor.moveToFirst();
                         String price = cursor.getString(cursor.getColumnIndex("price"));
                         String updown = cursor.getString(cursor.getColumnIndex("updown"));
                         // 计算基金概览数据并封装结果数据
@@ -390,16 +395,18 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         // 申购费用＝申购金额－净申购金额
         // 申购份额＝净申购金额/T日申购价格
         // 注：净申购金额及申购份额的计算结果以四舍五入的方法保留小数点后两位。
-        if(fundInsuranceType == 0 && (!fundRate.equals(""))){
+        if((fundInsuranceType == 0) && (!fundRate.equals(""))){
             Double jsgje = Double.parseDouble(buyMoney)/(1+Double.parseDouble(fundRate)/100);
             Double sgfy = Double.parseDouble(buyMoney) - jsgje;
             Double sgfe = jsgje/Double.parseDouble(buyPrice);
             values.put("poundage",String.format("%.2f", sgfy));
             values.put("buyAmount",String.format("%.2f", sgfe));
+            buyAmount = sgfe;
         }else if(fundInsuranceType == 1){
             Double hdsgfe = Double.parseDouble(buyMoney)/Double.parseDouble(buyPrice);
             values.put("poundage","0");
             values.put("buyAmount",String.format("%.2f", hdsgfe));
+            buyAmount = hdsgfe;
         }
     }
 
@@ -462,33 +469,38 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
                 "moneyconfig_db", 2);
         // 得到一个只读的SQLiteDatabase对象
         SQLiteDatabase sqliteDatabase = dbHelper.getReadableDatabase();
-        Cursor fundBuyCursor = sqliteDatabase.query("fund_buyInfo", new String[]{"buyAmount",
-                        "poundage", "buyMoney"},
+
+        //查询基金概览表是否有此基金
+        Cursor fundSumCursor = sqliteDatabase.query("fund_sum", null,
                 "fundCode='"+fundCode+"'", null, null, null, null);
-        //计算基金本金、手续费、持仓
-        while (fundBuyCursor.moveToNext()){
-            buyAmountSum += Double.parseDouble(fundBuyCursor.getString(
-                    fundBuyCursor.getColumnIndex("buyAmount")));
-            poundageSum += Double.parseDouble(fundBuyCursor.getString(
-                    fundBuyCursor.getColumnIndex("poundage")));
-            buyMoneySum += Double.parseDouble(fundBuyCursor.getString(
-                    fundBuyCursor.getColumnIndex("buyMoney")));
+        //如果有则更新数据，否则插入数据
+        if(fundSumCursor.getCount()!=0){
+            fundSumCursor.moveToFirst();
+            //计算基金本金、手续费、持仓
+            buyMoneySum = Double.parseDouble(fundSumCursor.getString(
+                    fundSumCursor.getColumnIndex("buyMoneySum"))) + Double.parseDouble(buyMoney);
+            buyAmountSum = Double.parseDouble(fundSumCursor.getString(
+                    fundSumCursor.getColumnIndex("fund_Position"))) + buyAmount;
+        }else {
+            //计算基金本金、手续费、持仓
+            buyMoneySum = Double.parseDouble(buyMoney);
+            buyAmountSum = buyAmount;
         }
 
         Cursor fundRedeemCursor = sqliteDatabase.query("fund_redeem", new String[]{"redeemMoney"},
                 "fundCode='"+fundCode+"'", null, null, null, null);
         //计算基金累计赎回资金
         while (fundRedeemCursor.moveToNext()){
-            fund_RedeemMoneySum += Double.parseDouble(fundBuyCursor.getString(
-                    fundBuyCursor.getColumnIndex("redeemMoney")));
+            fund_RedeemMoneySum += Double.parseDouble(fundRedeemCursor.getString(
+                    fundRedeemCursor.getColumnIndex("redeemMoney")));
         }
 
         Cursor fundBonusCursor = sqliteDatabase.query("fund_bonus", new String[]{"bonusMoney"},
                 "fundCode='"+fundCode+"'", null, null, null, null);
         //计算累计现金分红
         while (fundBonusCursor.moveToNext()){
-            fund_BonusMoneySum += Double.parseDouble(fundBuyCursor.getString(
-                    fundBuyCursor.getColumnIndex("bonusMoney")));
+            fund_BonusMoneySum += Double.parseDouble(fundBonusCursor.getString(
+                    fundBonusCursor.getColumnIndex("bonusMoney")));
         }
 
         fund_Position = buyAmountSum;
@@ -512,7 +524,7 @@ public class AddFundActivity extends FragmentActivity implements OnDateSetListen
         // 关闭游标
         fundRedeemCursor.close();
         fundBonusCursor.close();
-        fundBuyCursor.close();
+        fundSumCursor.close();
         return value;
     }
 

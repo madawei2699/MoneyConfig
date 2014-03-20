@@ -11,11 +11,16 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.mdw.moneyconfig.config.ConfigFragment;
+import com.mdw.moneyconfig.database.DataService;
+import com.mdw.moneyconfig.fund.AddFundActivity;
+import com.mdw.moneyconfig.fund.FundFragment;
+import com.mdw.moneyconfig.proportion.ProportionFragment;
+import com.mdw.moneyconfig.stock.StockFragment;
+import com.mdw.moneyconfig.utils.Constant;
 
 public class MainActivity extends Activity {
 	

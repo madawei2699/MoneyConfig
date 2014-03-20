@@ -1,8 +1,10 @@
-package com.mdw.moneyconfig;
+package com.mdw.moneyconfig.fund;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
+import com.mdw.moneyconfig.utils.Constant;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
