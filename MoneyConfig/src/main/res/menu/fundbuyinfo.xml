@@ -1,9 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item
-        android:title="@string/ok"
-        android:showAsAction="always"
-        android:icon="@drawable/transparent"
-        android:enabled="false"/>
+
 
     <item
         android:id="@+id/fund_redeem"
@@ -12,10 +8,16 @@
         android:icon="@drawable/fund_redeem"/>
 
     <item
-        android:title="@string/ok"
+        android:id="@+id/fund_searchInfo"
+        android:title="@string/searchFundInfo"
         android:showAsAction="always"
-        android:icon="@drawable/transparent"
-        android:enabled="false"/>
+        android:icon="@drawable/searchfundinfo"/>
+
+    <item
+        android:id="@+id/fund_bonus"
+        android:title="@string/fund_bonus"
+        android:showAsAction="always"
+        android:icon="@drawable/bonus"/>
     <item
         android:id="@+id/fund_deleteAll"
         android:title="@string/fund_deleteAll"

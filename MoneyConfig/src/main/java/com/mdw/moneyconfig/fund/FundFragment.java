@@ -74,7 +74,7 @@ public class FundFragment extends Fragment {
                 bundle.putString("fundName",fn);
                 bundle.putString("position",sPosition);
                 Intent fundBuyInfo = new Intent(FundFragment.this.getActivity(),
-                        fundInfoActivity.class);
+                        FundInfoActivity.class);
                 fundBuyInfo.putExtras(bundle);
                 FundFragment.this.startActivity(fundBuyInfo);
                 //FundFragment.this.getActivity().finish();

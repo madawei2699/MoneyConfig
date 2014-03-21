@@ -73,5 +73,14 @@
     <string name="editFundRedeemRate">不用输入%</string>
     <string name="fund_BuyMoneySum">本金</string>
     <string name="errorRedeemAmount">赎回份数不能大于持仓份数!</string>
+    <string name="fund_bonus">分红</string>
+    <string name="searchFundInfo">查询基金信息</string>
+    <string name="title_fundBonus">基金分红</string>
+    <string name="textViewFundBonusDate">分红日期</string>
+    <string name="editFundBonus">每10份分红金额</string>
+    <string name="titleFundBonus">-基金分红</string>
+    <string name="titleFundRedeem">-基金赎回</string>
+    <string name="errorBonusMoney">基金分红金额未填写!</string>
+    <string name="titleFundOperation">-基金操作日志</string>
 
 </resources>

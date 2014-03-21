@@ -39,12 +39,17 @@
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize"/>
         <activity
-            android:name=".fund.fundInfoActivity"
+            android:name=".fund.FundInfoActivity"
             android:theme="@android:style/Theme.Holo.Light"
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".fund.RedeemFundActivity"
+            android:theme="@android:style/Theme.Holo.Light"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".fund.FundBonusActivity"
             android:theme="@android:style/Theme.Holo.Light"
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize"/>
