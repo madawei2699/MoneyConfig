@@ -91,4 +91,97 @@ public class DataSource {
         return cv;
     }
 
+    /**
+     * 计算基金总市值
+     * @return
+     */
+    public static String queryFundMarketValueSum(){
+        String result = "";
+        sqliteDatabase = dbHelper.getReadableDatabase();
+        cursor = sqliteDatabase.query("fund_sum", null,
+                null, null, null, null, null);
+        Double mvs = 0.0;
+        while (cursor.moveToNext()){
+            mvs += Double.parseDouble(cursor.getString(cursor.getColumnIndex("fund_MarketValue")));
+        }
+        result = String.format("%.2f",mvs);
+        return result;
+    }
+
+    /**
+     * 计算基金总盈亏
+     * @return
+     */
+    public static String queryFundProfitLossSum(){
+        String result = "";
+        sqliteDatabase = dbHelper.getReadableDatabase();
+        cursor = sqliteDatabase.query("fund_sum", null,
+                null, null, null, null, null);
+        Double pls = 0.0;
+        while (cursor.moveToNext()){
+            pls += Double.parseDouble(cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossSum")));
+        }
+        result = String.format("%.2f",pls);
+        return result;
+    }
+
+    /**
+     * 计算基金总盈亏幅度
+     * @return
+     */
+    public static String queryFundProfitLossSumRate(){
+        String result = "";
+        sqliteDatabase = dbHelper.getReadableDatabase();
+        cursor = sqliteDatabase.query("fund_sum", null,
+                null, null, null, null, null);
+        //累计盈亏
+        Double pls = 0.0;
+        //本金
+        Double bms = 0.0;
+        while (cursor.moveToNext()){
+            pls += Double.parseDouble(cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossSum")));
+            bms += Double.parseDouble(cursor.getString(cursor.getColumnIndex("buyMoneySum")));
+        }
+        result = String.format("%.2f",pls/bms);
+        return result;
+    }
+
+    /**
+     * 计算基金今日盈亏总和
+     * @return
+     */
+    public static String queryFundProfitLossToday(){
+        String result = "";
+        sqliteDatabase = dbHelper.getReadableDatabase();
+        cursor = sqliteDatabase.query("fund_sum", null,
+                null, null, null, null, null);
+        Double plt = 0.0;
+        while (cursor.moveToNext()){
+            plt += Double.parseDouble(cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossToday")));
+        }
+        result = String.format("%.2f",plt);
+        return result;
+    }
+
+    /**
+     * 计算基金今日盈亏总幅度
+     * @return
+     */
+    public static String queryFundProfitLossTodayRate(){
+        String result = "";
+        sqliteDatabase = dbHelper.getReadableDatabase();
+        cursor = sqliteDatabase.query("fund_sum", null,
+                null, null, null, null, null);
+        //累计盈亏
+        Double plt = 0.0;
+        //本金
+        Double bms = 0.0;
+        while (cursor.moveToNext()){
+            plt += Double.parseDouble(cursor.getString(cursor.getColumnIndex("fund_ProfitOrLossToday")));
+            bms += Double.parseDouble(cursor.getString(cursor.getColumnIndex("buyMoneySum")));
+        }
+        result = String.format("%.2f",plt/bms);
+        return result;
+    }
+
 }

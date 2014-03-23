@@ -279,6 +279,13 @@ public class RedeemFundActivity extends FragmentActivity implements OnDateSetLis
         switch (item.getItemId()) {
             case R.id.saveFundRedeem:
                 getEditValue();
+                if(redeemAmount.equals("") || fundRedeemRate.equals("")){
+                    //提示输入赎回数量
+                    Toast toast=Toast.makeText(RedeemFundActivity.this,
+                            getResources().getString(R.string.errorRedeemAmountNull), Toast.LENGTH_SHORT);
+                    toast.show();
+                    break;
+                }
                 if(Double.parseDouble(redeemAmount)>Double.parseDouble(position)){
                     //提示赎回份数不能大于持仓份数
                     Toast toast=Toast.makeText(RedeemFundActivity.this,

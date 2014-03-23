@@ -5,7 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="5dp">
-
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/fundInfoOperationLV"
+        android:gravity="center_vertical"
+        android:text="@string/fund_operation"
+        android:layout_weight="1"
+        android:textSize="15sp"/>
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"

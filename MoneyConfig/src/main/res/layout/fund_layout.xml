@@ -3,10 +3,89 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fundSumInfo"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/marketvalueSum"
+            android:layout_marginLeft="5dp"/>
+        <TextView
+            android:id="@+id/marketvalueSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fundProfitLossInfo"
+        android:layout_below="@+id/fundSumInfo"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_fundProfitOrLossSum"
+            android:layout_marginLeft="5dp"/>
+        <TextView
+            android:id="@+id/profitLossSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/profitLossSumRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fundProfitLossToday"
+        android:layout_below="@+id/fundProfitLossInfo"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_fundProfitOrLossToday"
+            android:layout_marginLeft="5dp"/>
+        <TextView
+            android:id="@+id/tv_ProfitLossToday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/tv_ProfitLossTodayRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
     <include
         android:id="@+id/fund_head"
-        layout="@layout/item_fund" />
+        layout="@layout/item_fund"
+        android:layout_below="@id/fundProfitLossInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"/>
 
     <ListView
         android:id="@+id/fund_listView1"

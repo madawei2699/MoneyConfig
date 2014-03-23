@@ -52,6 +52,34 @@ public class FundFragment extends Fragment {
 		mHead.setBackgroundColor(Color.parseColor("#b2d235"));
 		mHead.setOnTouchListener(new ListViewAndHeadViewTouchLinstener());
 
+        //设置基金总览数据
+        TextView mvs = (TextView) fundLayout.findViewById(R.id.marketvalueSum);
+        TextView pls = (TextView) fundLayout.findViewById(R.id.profitLossSum);
+        TextView plsr = (TextView) fundLayout.findViewById(R.id.profitLossSumRate);
+        TextView plt = (TextView) fundLayout.findViewById(R.id.tv_ProfitLossToday);
+        TextView pltr = (TextView) fundLayout.findViewById(R.id.tv_ProfitLossTodayRate);
+        //获取总览数据
+        mvs.setText(DataSource.queryFundMarketValueSum());
+        pls.setText(DataSource.queryFundProfitLossSum());
+        plsr.setText(DataSource.queryFundProfitLossSumRate()+"%");
+        plt.setText(DataSource.queryFundProfitLossToday());
+        pltr.setText(DataSource.queryFundProfitLossTodayRate()+"%");
+        //设置总览数据颜色
+        if(Double.parseDouble(DataSource.queryFundProfitLossSum())>=0){
+            pls.setTextColor(getResources().getColor(R.color.red));
+            plsr.setTextColor(getResources().getColor(R.color.red));
+        }else {
+            pls.setTextColor(getResources().getColor(R.color.green));
+            plsr.setTextColor(getResources().getColor(R.color.green));
+        }
+        if(Double.parseDouble(DataSource.queryFundProfitLossToday())>=0){
+            plt.setTextColor(getResources().getColor(R.color.red));
+            pltr.setTextColor(getResources().getColor(R.color.red));
+        }else {
+            plt.setTextColor(getResources().getColor(R.color.green));
+            pltr.setTextColor(getResources().getColor(R.color.green));
+        }
+
 		mListView1 = (ListView) fundLayout.findViewById(R.id.fund_listView1);
 		mListView1.setOnTouchListener(new ListViewAndHeadViewTouchLinstener());
         mListView1.setOnItemClickListener(new OnItemClickListener() {
@@ -85,14 +113,7 @@ public class FundFragment extends Fragment {
                 "moneyconfig_db", 2);
         // 得到一个只读的SQLiteDatabase对象
         SQLiteDatabase sqliteDatabase = dbHelper.getReadableDatabase();
-        // 调用SQLiteDatabase对象的query方法进行查询，返回一个Cursor对象：由数据库查询返回的结果集对象
-        // 第一个参数String：表名
-        // 第二个参数String[]:要查询的列名
-        // 第三个参数String：查询条件
-        // 第四个参数String[]：查询条件的参数
-        // 第五个参数String:对查询的结果进行分组
-        // 第六个参数String：对分组的结果进行限制
-        // 第七个参数String：对查询的结果进行排序
+
         cursor = sqliteDatabase.query("fund_base", new String[] { "fundCode",
                 "name", "price", "updown", "scope", "date"},
                 null, null, null, null, null);

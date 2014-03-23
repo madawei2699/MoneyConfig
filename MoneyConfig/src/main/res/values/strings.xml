@@ -81,6 +81,15 @@
     <string name="titleFundBonus">-基金分红</string>
     <string name="titleFundRedeem">-基金赎回</string>
     <string name="errorBonusMoney">基金分红金额未填写!</string>
-    <string name="titleFundOperation">-基金操作日志</string>
+    <string name="titleFundOperation">-操作日志</string>
+    <string name="errorRedeemAmountNull">请输入赎回数量或赎回费率!</string>
+    <string name="fund_operation">操作</string>
+    <string name="buy">买入</string>
+    <string name="redeem">赎回</string>
+    <string name="bonus">分红</string>
+    <string name="marketvalueSum">总市值</string>
+    <string name="tv_fundProfitOrLossSum">总盈亏</string>
+    <string name="tv_fundProfitOrLossToday">今日盈亏</string>
+    <string name="marketvalueSumRate">总盈亏率</string>
 
 </resources>

@@ -384,7 +384,7 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
         values = new ContentValues();
         values.put("fundCode", fundCode);
         values.put("bonusType", fundBonusType);
-        values.put("buyPrice",fundBonusPrice);
+        values.put("bonusPrice",fundBonusPrice);
         values.put("bonusDate", fundBonusDate);
         if("".equals(bonusTenPerPrice)){
             values.put("bonusTenPerPrice", "0");
@@ -409,8 +409,8 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
         //初始化分红基金份额、现金分红金额
         fundBonusAmount = fhjjfe;
         fundBonusMoney = xjfhje;
-        values.put("bonusMoney",String.valueOf(xjfhje));
-        values.put("bonusAmount",String.valueOf(fhjjfe));
+        values.put("bonusMoney",String.format("%.2f",xjfhje));
+        values.put("bonusAmount",String.format("%.2f",fhjjfe));
     }
 
     /**
