@@ -336,11 +336,11 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
                 }
                 break;
             case R.id.searchBonus:
-                getEditValue();
+                //getEditValue();
                 // 用正则表达式判断输入基金代码是否正确
                 if(fundCode.matches("^of\\d{6,6}")){
                     // 给线程传递请求URL
-                    queryHtml(Utils.getPropertiesURL("fundRateWeb")
+                    queryHtml(Utils.getPropertiesURL("fundBonusWeb")
                             +fundCode.replaceAll("of",""));
                 }else {
                     Toast toast=Toast.makeText(FundBonusActivity.this,
@@ -422,8 +422,8 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
         pd = ProgressDialog.show(FundBonusActivity.this, "查询数据", "加载中，请稍后……");
 
         //开启线程，连接主页，获取html，开始进行解析
-        SearchService ss = new SearchService(url,handler);
-        new Thread(ss).start();
+        FundBonusWebService fbws = new FundBonusWebService(url,handler);
+        new Thread(fbws).start();
     }
 
     /**

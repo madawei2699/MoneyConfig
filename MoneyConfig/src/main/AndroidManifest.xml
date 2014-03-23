@@ -16,6 +16,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar"
+        android:hardwareAccelerated="true"
         android:name=".utils.MyApplication">
         <activity
             android:name=".utils.SplashScreen"

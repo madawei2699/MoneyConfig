@@ -1,0 +1,585 @@
+/*
+	reset style
+-----------------*/
+html,body,div,span,object,ifame,
+h1,h2,h3,h4,h5,h6,p,blockquote,pre,
+a,abbr,acronym,address,code,cite,var,
+del,dfn,em,img,q,dl,dt,dd,ul,ol,li,
+form,fieldset,lengend,label,
+table,caption,thead,tbody,tfoot,tr,th,td
+{ margin:0; padding:0; border:0; font-size:100%; font-style:inherit; font-weight:inherit; font-family:inherit; vertical-align:baseline;}
+
+body{ line-height:1.5;}
+
+/* tables still need "cellpadding=0" in the markup */
+table{ border-collapse:separate; border-spacing:0;}
+caption,th,td{ font-weight:normal; text-align:left;}
+table,th,td{ vertical-align:middle;}
+
+/*remove possible quote mark ("") from q and blockquote*/
+blockquote:after,blockquote:before,q:after,q:before{ content:"";}
+blockquote,q{ quotes:"""";}
+
+/*remove annoying border on the linked images*/
+a img{ border:none;}
+hr{ display:none;}
+
+
+/*
+	link style
+---------------*/
+a:link{ color:#072885; text-decoration:none;}
+a:visited{ color:#800080;text-decoration:none;}
+a:hover{color:#313131;}
+a:hover,
+a:active,
+a:focus {text-decoration:underline; }
+
+/*
+	form style
+-----------------*/
+.readonly{background-color:transparent;border:none;border-bottom:1px solid #999;}
+.check{ vertical-align:middle;}
+.radio{position:relative;top:2px;}
+.text{border: 1px solid #D2D2D2;height:18px;margin:0;_padding-top:4px;_height:15px;}
+
+/*
+	msic style
+----------------*/
+ol,ul,ol li,ul li{list-style:none;}
+i{visibility:hidden;font-size:0;}
+.light-orange{color:#FF5A00;}
+.green{color:green;}
+.red,
+.require{color:red;padding:0 2px;}
+.orange{color:#DA0000;}
+.gray{color:#828282;}
+.light-blue{color:#1F91D1;}
+.text-center{text-align:center;}
+.vertical-top{vertical-align:top;}
+.text-right{text-align:right;}
+.text-left{text-align:left;}
+.hidden{visibility:hidden;}
+.float-right{float:right;}
+.float-left{float:left;}
+
+/*
+	basic table style
+---------------------------*/
+.table{}
+.table th,
+.table td{text-align:center;padding:5px 0;color:#005CBF;}
+.table thead th{background:none;border-bottom:1px solid #cee4f2;}
+.table thead th:first-child{border-left:1px solid #fff;}
+.table thead th:last-child{border-right:1px solid #fff;}
+.table thead th.first{border-left:1px solid #fff;}
+.table thead th.last{border-right:1px solid #fff;}
+.table tbody tr:nth-child(2n) td{background:#f9fafc;}
+.table tbody tr.odd td{background-color:#fff;}
+.table tbody tr.even td{background-color:#f9fafc;}
+
+
+col.small{ width:5%;}
+col.normal{ width:10%;border:none;background:transparent;}
+col.medium{ width:15%;}
+col.large{ width:20%;}
+col.larger{ width:25%;}
+col.xlarger{ width:40%;}
+col.xxlarger{ width:50%;}
+
+/*
+	tab style
+----------------------*/
+.box-tab{*zoom:1;}
+.box-tab-title{height:30px;*zoom:1;background:url("../images/h-line.gif") repeat-x 0 -40px;}
+.box-tab-title li{float:left;height:29px;line-height:29px;border-right:1px solid #cce2f0;text-align:center;}
+.box-tab-title li.last{border-right:none;}
+.box-tab-title li a{float:left;display:block;text-align:center;color:#012593;font-family:"微软雅黑";text-decoration:none;}
+.box-tab-title li a:hover,
+.box-tab-title li a:focus,
+.box-tab-title li a:active{text-decoration:none;}
+
+.box-tab-title li.current a{background-image:none;}
+.box-tab-content,
+.box-tab-item{*zoom:1;}
+.box-tab-content{}
+
+
+#box-tab-my-fund-title li{overflow:hidden;}
+#box-tab-my-fund-title a{width:91px;background:url("../images/font.gif") no-repeat 12px 0;line-height:200px;}
+#box-tab-my-fund-title .tab-item-self{background-position:12px -50px;}
+#box-tab-my-fund-title li.current{background:#fff url("../images/h-line.gif") repeat-x 0 0;}
+
+#box-tab-fund-grade-detail{margin-top:12px;}
+#box-tab-fund-grade-detail .box-tab-title{padding:3px 0 0 12px;height:26px;border-right:1px solid #CCE2F0;border-left:1px solid #CCE2F0;}
+#box-tab-fund-grade-detail li{height:25px;line-height:25px;border-top:1px solid #CCE2F0;border-left:1px solid #CCE2F0;margin-left:-1px;}
+#box-tab-fund-grade-detail li a{padding:0 16px;color:#005cbf;font-family:"宋体";}
+#box-tab-fund-grade-detail li a.btn{padding:0;top:5px;left:-12px;display:none;}
+#box-tab-fund-grade-detail li.current{background:#fff;}
+#box-tab-fund-grade-detail li.current a{color:#0A227A;}
+#box-tab-fund-grade-detail li.current a.btn{background:url("../images/icon.gif") no-repeat 0 -20px;}
+
+
+/*
+	btn style
+---------------------*/
+.btn{display:inline-block;*display:inline;*zoom:1;background-repeat:no-repeat;background-image:url('../images/btn.gif');vertical-align:middle;width:20px;height:20px;}
+.btn span{visibility:hidden;font-size:0;}
+.btn-search{background:url('../images/btn-search.jpg') no-repeat 0 0;border:none;width:57px;height:22px;vertical-align:top;cursor:pointer;_margin-top:1px;}
+.btn-close{background:url('../images/btn-close.gif') no-repeat 0 0;width:16px;height:16px;}
+.btn-toggle{background-position:0 -40px;width:109px;height:12px;}
+.btn-company-weibo,
+.btn-add-free-stock,
+.btn-company-weibo-disable,
+.btn-add-free-stock-disable{width:78px;height:32px;}
+.btn-company-weibo{background-position:0 -80px;}
+.btn-add-free-stock{background-position:0 -120px;}
+.btn-company-weibo:hover{background-position:-100px -80px;}
+.btn-add-free-stock:hover{background-position:-100px -120px;}
+.btn-company-weibo-disable{background-position:-200px -80px;}
+.btn-add-free-stock-disable{background-position:-200px -120px;}
+.btn-add-free-stock-disable:hover{background-position:-300px -120px;}
+.btn-show-login{width:120px;height:48px;background-position:0 -160px;}
+.btn-show-login:hover{background-position:0 -220px;}
+
+/*
+	other style
+---------------------*/
+.more{padding:6px 0;}
+.more a{color:#7c7c7c;}
+.hr{height:1px;overflow:hidden;background-color:#CEE4F2;margin:0 0 3px 0;width:100%;}
+
+.date{position:relative;top:-25px;text-align:right;margin-bottom:-20px;color:#8c8c8c;}
+.hide{display:none !important;}
+
+.quartile,
+.quartile span{display:block;}
+.quartile{width:38px;height:32px;border:1px solid #8facdb;border-bottom:none;}
+.quartile span{height:7px;overflow:hidden;border-bottom:1px solid #8facdb;}
+.quartile-1 .fst,
+.quartile-2 .sec,
+.quartile-3 .thir,
+.quartile-4 .four{background-color:#8facdb;}
+
+.chart-bar{width:200px;position:relative;height:10px;*zoom:1;}
+.chart-bar div{height:10px;background-color:#63a1de;text-align:right;line-height:10px;color:#3f3f3f;}
+.mark{position:absolute;}
+
+.star,
+.help{display:inline-block;*display:inline;*zoom:1;height:14px;overflow:hidden;background:url("../images/icon.gif") no-repeat 0 0;}
+.star-0{width:15px;background-position:0 -40px;}
+.star-1{width:15px;}
+.star-2{width:30px;}
+.star-3{width:45px;}
+.star-4{width:60px;}
+.star-5{width:75px;}
+.star-6{width:90px;}
+.star-7{width:105px;}
+.star-8{width:120px;}
+.star-9{width:135px;}
+.star-10{width:150px;}
+.star-11{width:165px;}
+
+.help{width:12px;height:12px;background-position:0 -20px;position:relative;top:-2px;margin-left:3px;}
+
+.img-wrap{float:left;}
+.suggest{color:#8c8c8c;}
+
+
+/*
+	weibo style
+---------------------*/
+.weibo-list li{padding:25px 0;background:url("../images/dot-gray.gif") repeat-x 0 100%;}
+.weibo-list li.lst{background:none;}
+.weibo-list li:last-child{background:none;}
+.weibo-list .img-wrap{width:50px;height:50px}
+.weibo-detail{margin-left:60px;line-height:2;}
+.weibo-detail strong{font-weight:normal;color:#7c7c7c;padding-right:8px;}
+.weibo-detail .float-right,
+.weibo-detail .float-right a{color:#7c7c7c;}
+#box-weibo-list{padding-right:10px;}
+.weibo-list-scroll{height:438px;overflow-y:scroll;}
+
+/*
+	title style
+----------------------*/
+.title{font-family:"微软雅黑","黑体";background:url("font.gif") no-repeat 0 0;height:30px;line-height:200px;border-bottom:2px solid #08237a;overflow:hidden;display:block;}
+.fund-title{border-bottom:2px solid #08237a;}
+.title-5{color:#0A227A;}
+.fund-title .title{font-size:22px;height:auto;border-bottom:none;line-height:normal;display:inline-block;*display:inline;*zoom:1;background:url("../images/mark.jpg") no-repeat 0 8px;padding-left:12px;color:#012793;}
+.fund-title .type{color:#005cbf;}
+.title-feature{background-position:0 -100px;height:30px;}
+.title-basic{background-position:53px -150px;height:30px;}
+.title-investment-style{background-position:53px -200px;height:30px;}
+.title-investment-combination{background-position:53px -250px;height:30px;}
+.title-fund-finance-situation{background-position:53px -300px;height:30px;}
+.title-fund-grade{background-position:53px -350px;height:30px;}
+.title-similar-funds{background-position:0 -400px;height:30px;}
+.title-syngeneic-funds{background-position:0 -450px;height:30px;}
+.title-files{background:none;}
+.title-files span{display:block;background:url("../images/font.gif") 0 -500px no-repeat;height:30px;overflow:hidden;cursor:pointer;}
+.title-files .show-all{display:block;background-position:0 -550px;}
+.title-performance-rank{background-position:5px -600px;height:30px;border-width:1px 1px 0;}
+.title-investment-association{background-position:0 -650px;}
+.title-asset-allocation{background-position:5px -800px;}
+.title-subscribe-redeem-portion{background-position:5px -850px;}
+.title-ticket-distribution{background-position:5px -900px;}
+.title-five-ticket{background-position:5px -950px;}
+.title-subscribe-stock-pick-style{background-position:5px -1000px;}
+.title-distribution-list{background-position:5px -1050px;}
+.title-ten-blue-chip{background-position:5px -1100px;}
+.title-fund-grade-detail{background-position:0 -700px;}
+.title-news-notice{background-position:0 -750px;}
+.title-fund-notice{background-position:0 -1150px;}
+.title-fund-news{background-position:0 -1200px;}
+.title-interaction{background-position:0 -1250px;}
+.title-weibo-interaction{background-position:0 -1300px;}
+.title-fund-bar{background-position:0 -1350px;}
+
+.title-wrap{height:36px;background-color:#f9fafc;border-top:2px solid #08237a;border-bottom:1px solid #dce5f4;}
+.title-wrap .title{border-bottom:none;height:36px;position:relative;bottom:-1px;}
+
+/*
+	section style
+---------------------*/
+.section{margin-top:20px;*zoom:1;}
+.section-content{padding:10px 0;*zoom:1;}
+
+
+
+/*
+	layout style
+----------------------*/
+body{color:#0a227a;font-size:12px;text-align:center;}
+#container{ margin: 0 auto;padding: 5px 0;text-align:left;width:980px;}
+#header{}
+#middle{*zoom:1;display:inline-block;}
+#left{width:184px;float:left;}
+#right{float:right;width:775px;padding-left:20px;border-left:1px solid #d9e2e7;}
+#footer{clear:both;}
+
+/*
+	header nav style
+----------------------*/
+.secondary-header{height:33px;overflow:hidden;background:url(http://i2.sinaimg.cn/dy/images/header/2008/standardl2nav_bg.gif) repeat-x #fff;color:#000;font-size:12px;font-weight:100;border:1px #e3e3e3 solid;padding:0 10px 0 12px;overflow:hidden;zoom:1;}
+.secondary-header a,
+.secondary-header a:visited{color:#000;text-decoration:none;}
+.secondary-header a:hover,
+.secondary-header a:active{color:#c00;text-decoration:underline;}
+.logo{float:left;height:31px;line-height:31px;overflow:hidden;}
+.logo span,
+.logo span a,
+.logo span a:link,
+.logo span a:visited,
+.logo span a:hover{display:block;*float:left;display:table-cell;vertical-align:middle;*display:block;*font-size:27px;*font-family:Arial;height:31px;}
+.logo span,
+.logo span a img{vertical-align:middle;}
+.links{float:right;line-height:31px;}
+
+.nav {background: url("../images/nav-bg.jpg") repeat-x scroll 0 0 transparent;color:#FFFFFF;height: 40px;line-height: 40px;text-align: left;margin:10px 0 0 0;padding:0;list-style:none;}
+.nav li {display: block;float: left;height: 35px;padding: 0 10px 0 15px;}
+li.label {padding:0;}
+li.label a{background: url("../images/nav-home.jpg") no-repeat scroll 0 0 transparent;cursor: pointer;display: block;float: left;height: 40px;margin: 0;width: 129px;}
+.label em{visibility:hidden;text-indent:-9999em;}
+.nav a,
+.nav a:visited {color: #FFFFFF;font-size: 12px;text-decoration: none;}
+.nav a:hover {color: #FFFFFF;text-decoration: underline;}
+
+li.v-line{background: url("../images/v-line.jpg") no-repeat scroll 0 4px;margin-left:5px;}
+
+
+#box-stock-index-wrap{*zoom:1;padding:10px 0 0;overflow:hidden;}
+.index-list li{float:left;display:block;padding-right:32px;}
+.index-amt{padding-left:15px;}
+
+.bread-crumb{*zoom:1;background:#eef5ff;padding:10px 0 4px 8px;display:inline-block;width:972px;}
+.search-area{*zoom:1;float:right;color:#3d6fae;}
+.search-area a{color:#3d6fae;}
+
+.search-fund-form{display:inline;padding-left:25px;}
+
+
+/*
+	middle style
+------------------*/
+
+/*
+	box-fund-hq
+------------------*/
+#box-fund-hq{margin:20px 0;*zoom:1;}
+.fund-manager-wrap{*zoom:1;text-align:right;position:relative;top:-25px;margin-bottom:-18px;}
+.code{padding:0 18px 0 10px;}
+#fund-hq{overflow:hidden;*zoom:1;margin-top:10px;}
+.box-share-area{float:right;width:95px;}
+.box-share-area .btn{margin-bottom:4px;}
+
+.box-hq{width:859px;border-right:1px solid #dfdfdf;overflow:hidden;}
+.box-hq th{text-align:left;padding:2px 0;}
+.box-hq th span{color:#005cbf;padding:2px;}
+.box-hq th .red{color:red;}
+.box-hq th .green{color:green;}
+.box-hq .date{position:static;top:0;margin-bottom:0;color:#005cbf;}
+
+
+.hq-nav{overflow:hidden;background:#eef5ff;*zoom:1;height:30px;line-height:30px;}
+.hq-nav li{float:left;}
+.hq-nav li a{display:block;float:left;padding:0 15px;border-right:4px solid #fff;}
+.hq-nav li a:hover{background:#eee;color:#005cbf;text-decoration:none;}
+.hq-nav li span{padding:0 10px;color:#c5d6e7;}
+
+
+/*
+	left style
+-----------------*/
+#box-fund-latest-and-self{border-bottom:1px solid #cce2f0;margin-top:0;}
+#box-latest-fund,
+#box-self-fund{height:404px;overflow:hidden;}
+#box-latest-fund .btn-close{margin:0 3px;}
+#table-latest th,
+#table-free-fund th{border-bottom:none;}
+#table-latest tbody tr:nth-child(2n) td,
+#table-free-fund tbody tr:nth-child(2n) td{background:transparent;}
+#table-latest tr.odd td{background-color:transparent;}
+#table-free-fund tr.odd td{background-color:transparent;}
+#table-hot th,
+#table-hot-stock th{border-top:1px solid #cee4f2;border-bottom:none;background-color:#f9fafc;}
+#table-hot,
+#table-hot-stock{margin-top:10px;}
+
+#box-latest-fund .btn-close{_position:relative;left:-9999px;visibility:hidden;_visibility:visible;}
+#box-latest-fund .fake,
+#box-self-fund .fake{width:16px;height:16px;margin:0 3px;background:none;}
+#box-latest-fund tr.s-hover .btn-close{left:0;}
+#box-latest-fund tr:hover .btn-close{visibility:visible;}
+
+#box-no-login .login-cell-wrap{padding:167px 0;}
+
+.has-login-wrap{overflow:hidden;*zoom:1;text-align:right;padding:5px;background-color:#f8f9fb;}
+.has-login-wrap .name{float:left;}
+.has-login-wrap a{padding:0 3px;}
+#box-self-fund .user-name{float:left;}
+
+
+#box-feature-rank li{line-height:25px;}
+
+#box-fund-files {background-color:#f9fafc;}
+#box-fund-files .section-content{padding:0;}
+#box-fund-files dt{margin-top:8px;}
+#box-fund-files dd{border-bottom:1px solid #8da0ca;*zoom:1;}
+#box-fund-files dl .title{border-bottom:none;}
+.file-list{overflow:hidden;*zoom:1;}
+.file-list li{float:left;width:78px;padding:3px 0 3px 12px;}
+.btn-toggle-wrap{text-align:center;margin-top:8px;overflow:hidden;}
+.file-fold .file-list{height:50px;}
+.file-fold .btn-toggle{background-position:0 0;*position:relative;*bottom:-1px;}
+
+#box-similar-funds,
+#box-syngeneic-funds{border-bottom:1px solid #8da0ca;}
+
+#box-similar-funds td,
+#box-syngeneic-funds td{text-align:right;padding-right:6px;}
+#box-similar-funds tr:nth-child(2n) th,
+#box-syngeneic-funds tr:nth-child(2n) th{background:#f9fafc;}
+#box-similar-funds tr.even th,
+#box-syngeneic-funds tr.even th{background-color:#f9fafc;}
+
+
+/*
+	right style
+----------------*/
+#right th{color:#0a227a;}
+#table-fund-performance-rank,
+#table-ticket-distribution,
+#table-ten-blue-chip,
+#box-fund-grade-detail table{border-collapse:collapse;}
+#table-ten-blue-chip{*width:99%;}
+#table-ticket-distribution td,
+#table-ticket-distribution th,
+#table-fund-performance-rank td,
+#table-ten-blue-chip td,
+#table-ten-blue-chip th,
+#box-fund-grade-detail td,
+#box-fund-grade-detail th,
+#table-fund-performance-rank th{background:none;border:1px solid #dce5f4;}
+#table-ticket-distribution th,
+#table-ten-blue-chip th{background-color:#f7f9fe;}
+#table-ticket-distribution tbody th,
+#table-ten-blue-chip tbody th{background-color:transparent;}
+
+#table-fund-performance-rank .quartile{margin:0 auto;cursor:default;}
+.link{text-align:right;position:relative;top:-25px;}
+.link a{padding-right:18px;}
+
+#table-investment-association{margin-top:10px;}
+#table-investment-association table td{background:none;}
+
+#table-investment-association .fst,
+#table-investment-association .sec,
+#table-investment-association .thir,
+#table-investment-association .lst{vertical-align:top;background: url("../images/cross.gif") no-repeat scroll 100% 100% transparent;}
+#table-investment-association .fst{padding:0 12px 12px 0;}
+#table-investment-association .sec{background-position:0 100%;padding:0 0 12px 12px;}
+#table-investment-association .thir{background-position:100% 0;padding:12px 12px 0 0;}
+#table-investment-association .lst{background-position:0 0;padding:12px 0 0 12px;}
+
+
+#table-investment-association .title{border-bottom:none;line-height:1;text-indent:-9999em;}
+#table-investment-association .title-5{text-align:left;padding:3px 0;font-weight:normal;}
+
+
+#box-stock-pick-style-wrap{text-align:left;color:#0A227A;}
+.pick-style-radios{position:relative;top:-28px;color:#0A227A;}
+#box-stock-pick-style-wrap .title-5{*zoom:1;line-height:25px;background-color:#f4f9ff;padding-left:5px;font-weight:normal;}
+#box-stock-pick-style-wrap ul{margin-top:5px;}
+#box-stock-pick-style-wrap li{line-height:22px;}
+
+#table-distribution-list{margin-top:12px;}
+#table-distribution-list th,
+#table-distribution-list td{text-align:left;}
+#table-distribution-list th{line-height:20px;background:transparent;}
+
+#box-fund-grade-detail{margin-bottom:40px;}
+#box-fund-grade-detail table{margin-top:5px;}
+#box-fund-grade-detail .date{text-align:left;position:static;padding:5px 0;*margin-bottom:0;*top:0;}
+
+#box-interaction .more,
+#box-news-notice .more,
+#box-fund-bar .more{position:relative;top:-27px;margin-bottom:-25px;text-align:right;padding-right:5px;}
+
+
+#box-news-notice{overflow:hidden;*zoom:1;*margin-top:-25px;}
+#box-news-notice .section-content .title,
+#box-interaction .section-content .title,
+#box-fund-bar .title{border-bottom:1px solid #a20c17;}
+
+
+#box-news-notice .left,
+#box-news-notice .right{width:378px;}
+#box-news-notice .left{float:left;}
+#box-news-notice .right{float:right;}
+#box-news-notice li{padding:3px 0 3px 10px;background:url("../images/dot-blue.gif") no-repeat 0 10px;}
+#box-news-notice .right li{background:url("../images/dot-dark-blue.gif") no-repeat 0 10px;overflow:hidden;text-align:right;}
+#box-news-notice .date{position:static;float:right;color:#7c7c7c;margin-bottom:0;}
+.notice-item{display:inline-block;*display:inline;*zoom:1;width:180px;padding-right:30px;}
+#box-news-notice .right .link,
+#box-news-notice .right .date{position:static;float:none;top:0;}
+#box-news-notice .right .link{float:left;}
+
+
+#box-interaction .section-content{margin-top:10px;}
+.weibo-tip{display:inline-block;*display:inline;*zoom:1;padding-right:15px;background:url("../images/arrow-down.gif") no-repeat 100% 8px;}
+
+.box-publish-weibo{height:36px;line-height:36px;background-color:#dce5f6;overflow:hidden;padding:0 20px 0 10px;text-align:left;}
+.box-publish-weibo .btn-logout{padding-left:10px;}
+.box-publish-weibo .has-login-wrap{padding:0;background-color:transparent;}
+.btn-weibo-login{padding-left:15px;}
+.btn-weibo-login:link,
+.btn-weibo-login:visited,
+.btn-weibo-logout:link,
+.btn-weibo-logout:visited{color:#005cbf;}
+.weibo-tip .weibo-num,
+.weibo-tip a{color:#005cbf;}
+
+.weibo-content .name{color:#005cbf;}
+
+#box-fund-bar{margin-top:0;}
+#table-fund-bar th{border-bottom:none;background-color:#f9fafc;color:#005CBF;}
+#table-fund-bar .text-left{text-align:left;padding-left:2px;}
+#table-fund-bar .text-right{text-align:right;}
+#table-fund-bar  td{color:#7c7c7c;background:transparent;}
+#table-fund-bar  td.author{color:#014a93;}
+#table-fund-bar tfoot span{color:#014a93;padding-right:15px;}
+#table-fund-bar tfoot a:link{color:#005cbf;}
+
+#box-new-fund-info{*zoom:1;*margin-bottom:50px;}
+#box-new-fund-info table{border-collapse:collapse;}
+#box-new-fund-info td,
+#box-new-fund-info th{background:none;border:1px solid #dce5f4;}
+#box-new-fund-info th{color:#005cbf;text-align:center;}
+#box-new-fund-info td{color:#0a227a;text-align:left;padding-left:10px;padding-right:15px;}
+
+/*
+	footer style
+----------------*/
+#footer{color: #4F4F4F;font-size: 12px;line-height: 21px;margin-top: 20px;text-align: center;border-top:2px solid #6b88aa;padding-top:1px;}
+.footer-inner{border-top:1px solid #95b0ce;padding-top:20px;}
+/*#footer a,
+#footer a:visited {color: #4F4F4F;text-decoration: none;}
+#footer a:hover{color: #FF0000;text-decoration: underline;}*/
+
+
+
+/*
+	login style
+-----------------*/
+.dialog-login{border:none;}
+.dialog-login .dialog-content{padding:0;}
+.dialog-login .text{width:245px;}
+.dialog-login-overlay{background-color:#000;}
+#box-login-pannel{*zoom:1;background-color:#eef5ff;text-align:left;border:1px solid #cce2f0;}
+#box-login-pannel .error{color:red;height:20px;padding:10px 0 0 58px;line-height:20px;}
+.box-login-header{height:82px;background:url("../images/login-pannel-title.jpg") no-repeat 0 0;}
+.box-login-header h3{display:none;}
+.box-login-content{*zoom:1;padding:0 0 30px 50px;}
+#box-login-pannel .btn{background:url("../images/login-btn.gif") no-repeat 0 0;width:152px;height:37px;}
+#box-login-pannel p{padding:5px 0;}
+#box-login-pannel .savestate-wrap{padding-top:8px;}
+#box-login-pannel .check{position:relative;top:-3px;left:-3px;}
+#box-login-pannel .btn-login:hover{background-position:-160px 0;}
+#box-login-pannel .btn-reg{background-position:0 -100px;}
+#box-login-pannel .btn-reg:hover{background-position:-160px -100px;}
+.btn-find-pwd{padding-right:40px;}
+#box-login-pannel .hr{background-color:#d2e1f6;margin:6px 0;width:305px;}
+#box-login-pannel th,
+#box-login-pannel td{background-color:transparent;}
+#box-login-pannel th{text-align:right;vertical-align:top;padding-top:8px;}
+#box-login-pannel td{text-align:left;}
+
+/*
+	dialog-bubble style
+-----------------------*/
+.dialog-send-weibo{border:none;background:none;}
+.dialog-send-weibo .dialog-content{padding:0;}
+.dialog-bubble,
+.dialog-bubble-header,
+.dialog-bubble-header-inner,
+.dialog-bubble-content{*zoom:1;background:transparent url("../images/dialog-bubble.gif") no-repeat 100% 100%;}
+.dialog-bubble{padding-right:10px;}
+.dialog-bubble-header{background-position:100% 0;position:relative;right:-7px;top:-2px;margin-bottom:-2px;margin-left:-7px;}
+.dialog-bubble-header-inner{background-position:0 0;padding:18px 25px 8px 25px;}
+.dialog-bubble-content{background-position:0 100%;padding:0 15px 40px 25px;}
+#box-weibo-publish-wrap{width:550px;text-align:left;}
+.char-tip{position:relative;top:-10px;}
+.weibo-content-textarea{width:504px;height:80px;margin-bottom:8px;border:1px solid #ddd;color:#9E9E9E;font-size:12px;}
+.weibo-success{height:106px;padding-left:205px;text-align:left;}
+.weibo-success .success{background:transparent url("../images/weibo-success.gif") no-repeat 0 0;width:123px;height:20px;line-height:500px;overflow:hidden;}
+/*.weibo-blur{color:#9E9E9E;}*/
+.weibo-link{padding:8px 2px;}
+.weibo-link a{margin:0 5px;}
+.weibo-focus{color:#333;}
+.num{font-family: Constantia,Georgia;font-size: 22px;font-weight: 700;}
+.btn-publish{background-image:url("../images/btn-publish.gif");width:63px;height:20px;}
+
+
+
+/*
+	dialog-investigate style
+-----------------------------*/
+.dialog-investigate{text-align:left;padding:0;border:none;height:545px;}
+.dialog-investigate .dialog-content{padding:0;position:relative;}
+.dialog-investigate .fake-bg{position:absolute;left:0;top:0;z-index:5010;width:561px;height:545px;*zooom:1;background: url("../images/dialog-investigate-bg.png") no-repeat 0 0;_background: none;
+filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=noscale, src="http://www.sinaimg.cn/cj/xncg/images/dialog-investigate-bg.png");padding:0;}
+.dialog-investigate a.dialog-close{background: url("../images/dialog-investigate-close.png") no-repeat 0 0;height:20px;width:20px;right:15px;top:15px;}
+.box-investigate-wrap{position:absolute;left:0;top:0;z-index:5020;color:#333;padding-top:95px;}
+.box-investigate-wrap form{*zoom:1;}
+.box-investigate-wrap h3,
+.box-investigate-wrap ul,
+.box-investigate-wrap .other,
+.box-investigate-wrap .text-center{padding:0 70px;}
+.box-investigate-wrap h3{color:#333;font-size: 14px;font-weight: bold;line-height: 50px;}
+.box-investigate-wrap h4{padding:0 0 3px;font-weight:normal;}
+.box-investigate-wrap li{height:30px;line-height:30px;}
+.box-investigate-wrap .check{margin-left:0;margin-top:-1px;}
+.box-investigate-wrap textarea{border: 1px solid #CACACA;background-color: #FBFBFB;}
+.box-investigate-wrap textarea.gray{color:#999;}
+.box-investigate-wrap .text-center{padding-top:30px;height:57px;background-color:#f9fafc;margin:30px 10px 0 5px;}
