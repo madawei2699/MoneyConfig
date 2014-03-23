@@ -70,21 +70,15 @@ public class FundInfoWebService implements Runnable {
 
                 htmlData = "<html><head>"+"<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />"
                         +"<link rel=\"stylesheet\" type=\"text/css\" href=\"base.css\" />"
-                        +"<script type=\"text/javascript\" src=\"http://finance.sina.com.cn/xincaifund/temp/js/stockhq.js\"></script>"
-                        +"<script type=\"text/javascript\" src=\"http://finance.sina.com.cn/xincaifund/temp/js/config.js\"></script>"
-                        +"<script type=\"text/javascript\" src=\"http://finance.sina.com.cn/xincaifund/temp/js/view.js\"></script>"
-                        +"<script type=\"text/javascript\" src=\"http://finance.sina.com.cn/xincaifund/temp/js/modular.js\"></script>"
-                        +"<script type=\"text/javascript\" src=\"http://finance.sina.com.cn/xincaifund/temp/js/control.js\"></script>"
-                        +"<script type=\"text/javascript\" src=\"http://finance.sina.com.cn/xincaifund/temp/js/jquery.tmpl.min.js\"></script>"
-                        +"<script type=\"text/javascript\" src=\"http://finance.sina.com.cn/xincaifund/temp/js/jquery.plugin.js\"></script>"
+                        +"<script type=\"text/javascript\" src=\"jquery-1.4.2.min.js\"></script>"
+                        +"<script type=\"text/javascript\">jQuery.noConflict();</script>"
+                        +"<script type=\"text/javascript\">var fund_app = {};</script>"
                         +"<meta http-equiv=\"Content-Type\" content=\"text/html;charset=gb2312\"> "
-                        + "</head><body>" + htmlData + htmlPerformanceData + htmlInvestmentData
-                        + "<script>\n" +
-                        "jQuery(function(){\n" +
-                        "\tcontrol.init();\n" +
-                        "});\n" +
-                        "</script>" +
-                        "</body></html>";
+                        +"</head><body>" + htmlData + htmlPerformanceData + htmlInvestmentData +
+                        "<script type=\"text/javascript\" src=\"modular.js\"></script>" +
+                        "<script type=\"text/javascript\" src=\"stockhq.js\"></script>"
+                        +"<script>jQuery(function(){modular.blue_clips.get_clips_info();});</script>"
+                        +"</body></html>";
                 b.putString("html",htmlData);
                 m.setData(b);
             } catch (IOException e){
