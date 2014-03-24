@@ -35,7 +35,7 @@
             android:launchMode="singleTask">
         </activity>
         <activity
-            android:name=".fund.AddFundActivity"
+            android:name=".fund.FundAddActivity"
             android:theme="@android:style/Theme.Holo.Light"
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize"/>
@@ -45,12 +45,17 @@
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize"/>
         <activity
-            android:name=".fund.RedeemFundActivity"
+            android:name=".fund.FundRedeemActivity"
             android:theme="@android:style/Theme.Holo.Light"
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".fund.FundBonusActivity"
+            android:theme="@android:style/Theme.Holo.Light"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".fund.FundFastAddActivity"
             android:theme="@android:style/Theme.Holo.Light"
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize"/>

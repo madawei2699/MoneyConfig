@@ -91,5 +91,10 @@
     <string name="tv_fundProfitOrLossSum">总盈亏</string>
     <string name="tv_fundProfitOrLossToday">今日盈亏</string>
     <string name="marketvalueSumRate">总盈亏率</string>
+    <string name="errorFundRate">基金费率未填写!</string>
+    <string name="errorFundBackRate">费率未填写!</string>
+    <string name="errorNetworkInvaild">网络不可用,请打开网络或稍后再试!</string>
+    <string name="fastAdd">快速添加</string>
+    <string name="titleFundAdd">-快速添加</string>
 
 </resources>

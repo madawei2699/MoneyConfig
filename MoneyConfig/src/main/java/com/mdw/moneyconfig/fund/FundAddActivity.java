@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,25 +21,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
-import com.mdw.moneyconfig.MainActivity;
-import com.mdw.moneyconfig.R;
-import com.mdw.moneyconfig.database.DatabaseHelper;
 import com.mdw.moneyconfig.utils.Constant;
+import com.mdw.moneyconfig.database.DatabaseHelper;
+import com.mdw.moneyconfig.MainActivity;
 import com.mdw.moneyconfig.utils.MyApplication;
+import com.mdw.moneyconfig.R;
 import com.mdw.moneyconfig.utils.Utils;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
-import java.nio.DoubleBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public class FundBonusActivity extends FragmentActivity implements OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class FundAddActivity extends FragmentActivity implements OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     public static final String DATEPICKER_TAG = "datepicker";
     public static final String TIMEPICKER_TAG = "timepicker";
@@ -51,19 +50,19 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
     private ProgressDialog pd;
 
     /**
-	 * 基金分红模式：红利转投、现金分红
+	 * 基金收费模式：前端、后端
 	 */
-	private Spinner fundBonusSpinner;
+	private Spinner fundInsuranceRateSpinner; 
 	
 	/**
-	 * 基金分红适配器
+	 * 基金收费模式适配器
 	 */
-	private ArrayAdapter<String> fundBonusAdapter;
+	private ArrayAdapter<String> fundInsuranceRateAdapter;
 	
 	/**
-	 * 默认选择红利转投
+	 * 默认选择前端收费
 	 */
-	static int fundBonusPosition = 0;
+	static int fundInsuranceRatePosition = 0;
 
     /**
      * 基金代码
@@ -71,49 +70,34 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
     private String fundCode;
 
     /**
-     * 基金名称
+     * 购买金额
      */
-    private String fundName;
+    private String buyMoney="";
 
     /**
-     * 基金持仓
+     * 收费模式,0-前端,1-后端
      */
-    private String position;
+    private int fundInsuranceType = 0;
 
     /**
-     * 分红模式,0-红利转投,1-现金分红
+     * 费率
      */
-    private int fundBonusType = 0;
+    private String fundRate="";
 
     /**
-     * 每10份基金分红金额
+     * 购买日期
      */
-    private String bonusTenPerPrice="";
+    private String buyDate;
 
     /**
-     * 分红日期
-     */
-    private String fundBonusDate;
-
-    /**
-     * 分红时间
+     * 购买时间
      */
     private String buyTime;
 
     /**
-     * 分红价格
+     * 购买价格
      */
-    private String fundBonusPrice;
-
-    /**
-     * 现金分红金额
-     */
-    private Double fundBonusMoney = 0.0;
-
-    /**
-     * 基金分红份额
-     */
-    private Double fundBonusAmount = 0.0;
+    private String buyPrice;
 
     /**
      * 日期按钮
@@ -123,8 +107,14 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
     // 创建ContentValues对象
     ContentValues values;
 
+    //购买数量
+    Double buyAmount = 0.0;
+
+    //存储下拉框切换之前的值
+    String spValue;
+	
 	//基金收费模式
-    private String[] fundInsuranceRate = new String[] {"红利转投","现金分红"};
+    private String[] fundInsuranceRate = new String[] {"前端","后端"};
 
     private Handler handler = new Handler() {
         // 处理子线程给我们发送的消息
@@ -133,7 +123,7 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
             switch (msg.what){
                 case Constant.NETWORKINVALID:
                     pd.dismiss();
-                    Toast toast1=Toast.makeText(FundBonusActivity.this,
+                    Toast toast1=Toast.makeText(FundAddActivity.this,
                             getResources().getString(R.string.errorNetworkInvaild), Toast.LENGTH_SHORT);
                     toast1.show();
                     break;
@@ -144,17 +134,17 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
                     break;
                 case Constant.FUNDPRICEOK:
                     pd.dismiss();// 关闭ProgressDialog
-                    fundBonusPrice = msg.getData().getString("jjjz");
+                    buyPrice = msg.getData().getString("jjjz");
                     // 如果查询不到购买日期的历史净值，则提示用户无法添加基金
-                    if(!fundBonusPrice.equals("")){
+                    if(!buyPrice.equals("")){
                         //封装要添加的基金数据
                         wrapData();
                         // 创建了一个DatabaseHelper对象，只执行这句话是不会创建或打开连接的
-                        DatabaseHelper dbHelper = new DatabaseHelper(FundBonusActivity.this, "moneyconfig_db");
+                        DatabaseHelper dbHelper = new DatabaseHelper(FundAddActivity.this, "moneyconfig_db");
                         // 只有调用了DatabaseHelper的getWritableDatabase()方法或者getReadableDatabase()方法之后，才会创建或打开一个连接
                         SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
                         // 在fund_buyInfo中插入数据
-                        sqliteDatabase.insert("fund_bonus", null, values);
+                        sqliteDatabase.insert("fund_buyInfo", null, values);
                         // 在基金实时数据表查询基金价格及涨幅
                         Cursor cursor = sqliteDatabase.query("fund_base", new String[] { "fundCode",
                                         "price", "updown"},
@@ -163,8 +153,18 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
                         String price = cursor.getString(cursor.getColumnIndex("price"));
                         String updown = cursor.getString(cursor.getColumnIndex("updown"));
                         // 计算基金概览数据并封装结果数据
-                        ContentValues cv = calcFundSumBonus(fundCode,price,updown);
-                        sqliteDatabase.update("fund_sum",cv,"fundCode='"+fundCode+"'",null);
+                        ContentValues cv = calcFundSum(fundCode,price,updown);
+                        cursor.close();
+                        //查询基金概览表是否有此基金
+                        cursor = sqliteDatabase.query("fund_sum", null,
+                                "fundCode='"+fundCode+"'", null, null, null, null);
+                        //如果有则更新数据，否则插入数据
+                        if(cursor.getCount()!=0){
+                            sqliteDatabase.update("fund_sum",cv,"fundCode='"+fundCode+"'",null);
+                        }else {
+                            cv.put("fundCode",fundCode);
+                            sqliteDatabase.insert("fund_sum", null, cv);
+                        }
                         cursor.close();
                         // 关闭数据库
                         sqliteDatabase.close();
@@ -175,12 +175,12 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
                         Intent MainActivityIntent = new Intent();
                         //MainActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                         MainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        MainActivityIntent.setClass(FundBonusActivity.this,MainActivity.class);
+                        MainActivityIntent.setClass(FundAddActivity.this,MainActivity.class);
                         MainActivityIntent.putExtras(bundle);
                         startActivity(MainActivityIntent);
                         finish();
                     }else {
-                        Toast toast=Toast.makeText(FundBonusActivity.this,
+                        Toast toast=Toast.makeText(FundAddActivity.this,
                                 getResources().getString(R.string.errorFindFundRate), Toast.LENGTH_SHORT);
                         toast.show();
                     }
@@ -194,22 +194,15 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
     @Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fund_bonus_layout);
+        setContentView(R.layout.add_fund_layout);
 
-        View addView = getLayoutInflater().inflate(R.layout.titlebar_bonus, null);
+        View addView = getLayoutInflater().inflate(R.layout.titlebar_add, null);
         getActionBar().setCustomView(addView);
         getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setDisplayShowCustomEnabled(true);
-        fundCode = getIntent().getExtras().getString("fundCode");
-        fundName = getIntent().getExtras().getString("fundName");
-        position = getIntent().getExtras().getString("position");
-        TextView ttr = (TextView) addView.findViewById(R.id.title_text_fundBonus);
-        // 设置标题内容为基金名字+代码
-        ttr.setText(fundName+"["+fundCode+"]"+getResources().getString(R.string.titleFundBonus));
-        fundCode = "of" + fundCode;
 
-        fundBonusSpinner = (Spinner)findViewById(R.id.spinnerFundBonus);
+		fundInsuranceRateSpinner = (Spinner)findViewById(R.id.spinnerFrontBack);
 
 		setSpinner();
 
@@ -226,7 +219,7 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
         String date = sDateFormat.format(new java.util.Date());
         buttonDate.setText(date);
         // 初始化购买日期值
-        this.fundBonusDate = date;
+        this.buyDate = date;
 
         findViewById(R.id.buttonDate).setOnClickListener(new OnClickListener() {
 
@@ -259,8 +252,13 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
 	}
 
     private void getEditValue(){
-        EditText editFundBonus = (EditText) findViewById(R.id.editFundBonus);
-        bonusTenPerPrice = editFundBonus.getText().toString();
+        EditText editFundCode = (EditText) findViewById(R.id.editFundCode);
+        EditText editFundMoney = (EditText) findViewById(R.id.editFundMoney);
+        EditText editFundInsuranceRate = (EditText) findViewById(R.id.editFundInsuranceRate);
+        // 开放式基金前缀为"of"
+        fundCode = "of" + editFundCode.getText().toString();
+        buyMoney = editFundMoney.getText().toString();
+        fundRate = editFundInsuranceRate.getText().toString();
 
     }
 	
@@ -270,12 +268,12 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
     private void setSpinner()
     {        
         //绑定适配器和值
-    	fundBonusAdapter = new ArrayAdapter<String>(MyApplication.getInstance(),
+    	fundInsuranceRateAdapter = new ArrayAdapter<String>(MyApplication.getInstance(),
                 R.layout.myspinner,fundInsuranceRate);
-    	fundBonusSpinner.setAdapter(fundBonusAdapter);
-        fundBonusSpinner.setSelection(fundBonusPosition,true);  //设置默认选中项，此处为默认选中前端
-
-        fundBonusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+    	fundInsuranceRateSpinner.setAdapter(fundInsuranceRateAdapter);
+    	fundInsuranceRateSpinner.setSelection(fundInsuranceRatePosition,true);  //设置默认选中项，此处为默认选中前端
+        
+    	fundInsuranceRateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
 
             // 表示选项被改变的时候触发此方法
@@ -283,9 +281,21 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
             public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3)
             {
             	 TextView tv = (TextView)arg1;
-                 //tv.setTextSize(15);
+                 //tv.setTextSize(20);
                  tv.setTextColor(getResources().getColor(R.color.black));    //设置颜色
                  tv.setGravity(android.view.Gravity.CENTER_HORIZONTAL);   //设置居中
+                 EditText editFundInsuranceRate = (EditText) findViewById(R.id.editFundInsuranceRate);
+                 if(1 == position){
+                     spValue = editFundInsuranceRate.getText().toString();
+                     fundInsuranceType = 1;
+                     editFundInsuranceRate.setText("0");
+                     //如果是后端收费，则将输入框变为不可用
+                     editFundInsuranceRate.setEnabled(false);
+                 }else {
+                     fundInsuranceType = 0;
+                     editFundInsuranceRate.setEnabled(true);
+                     editFundInsuranceRate.setText(spValue);
+                 }
             }
 
             @Override
@@ -300,9 +310,9 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
 
     @Override
     public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        fundBonusDate = Integer.toString(year)+"-"+Integer.toString(month+1)+"-"+Integer.toString(day);
+        buyDate = Integer.toString(year)+"-"+Integer.toString(month+1)+"-"+Integer.toString(day);
         // 设置日期按钮值
-        buttonDate.setText(fundBonusDate);
+        buttonDate.setText(buyDate);
     }
 
     @Override
@@ -314,42 +324,42 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.fund_bonus, menu);
+        getMenuInflater().inflate(R.menu.addfund, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.saveFundBonus:
+            case R.id.saveFund:
                 getEditValue();
-                if(bonusTenPerPrice.equals("")){
-                    //提示分红金额不能为空
-                    Toast toast=Toast.makeText(FundBonusActivity.this,
-                            getResources().getString(R.string.errorBonusMoney), Toast.LENGTH_SHORT);
-                    toast.show();
-                    break;
-                }
                 // 用正则表达式判断输入基金代码是否正确
                 if(fundCode.matches("^of\\d{6,6}")){
-                    pd = ProgressDialog.show(FundBonusActivity.this, "查询历史净值", "加载中，请稍后……");
-                    FundPriceService fs = new FundPriceService(fundCode,fundBonusDate,handler);
+                    if(fundRate.equals("")){
+                        //提示基金费率不能为空
+                        Toast toast=Toast.makeText(FundAddActivity.this,
+                                getResources().getString(R.string.errorFundRate), Toast.LENGTH_SHORT);
+                        toast.show();
+                        break;
+                    }
+                    pd = ProgressDialog.show(FundAddActivity.this, "查询历史净值", "加载中，请稍后……");
+                    FundPriceService fs = new FundPriceService(fundCode,buyDate,handler);
                     new Thread(fs).start();
                 }else {
-                    Toast toast=Toast.makeText(FundBonusActivity.this,
+                    Toast toast=Toast.makeText(FundAddActivity.this,
                             getResources().getString(R.string.errorFundCode), Toast.LENGTH_SHORT);
                     toast.show();
                 }
                 break;
-            case R.id.searchBonus:
-                //getEditValue();
+            case R.id.searchRate:
+                getEditValue();
                 // 用正则表达式判断输入基金代码是否正确
                 if(fundCode.matches("^of\\d{6,6}")){
                     // 给线程传递请求URL
-                    queryHtml(Utils.getPropertiesURL("fundBonusWeb")
+                    queryHtml(Utils.getPropertiesURL("fundRateWeb")
                             +fundCode.replaceAll("of",""));
                 }else {
-                    Toast toast=Toast.makeText(FundBonusActivity.this,
+                    Toast toast=Toast.makeText(FundAddActivity.this,
                             getResources().getString(R.string.errorFundCode), Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -389,34 +399,38 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
     public void wrapData(){
         values = new ContentValues();
         values.put("fundCode", fundCode);
-        values.put("bonusType", fundBonusType);
-        values.put("bonusPrice",fundBonusPrice);
-        values.put("bonusDate", fundBonusDate);
-        if("".equals(bonusTenPerPrice)){
-            values.put("bonusTenPerPrice", "0");
+        values.put("fundInsuranceType", fundInsuranceType);
+        values.put("buyPrice",buyPrice);
+        values.put("buyDate", buyDate);
+        if("".equals(buyMoney)){
+            values.put("buyMoney", "0");
         }else{
-            values.put("bonusTenPerPrice", bonusTenPerPrice);
+            values.put("buyMoney", buyMoney);
         }
-        //分红金额
-        Double fhje = Double.parseDouble(position)*Double.parseDouble(bonusTenPerPrice)/10;
-        Double fhjjfe = 0.0;
-        Double xjfhje = 0.0;
-        if(fundBonusType == 0){
-            //分红基金份额
-            fhjjfe = fhje/Double.parseDouble(fundBonusPrice);
-            //现金分红金额
-            xjfhje = 0.0;
-        }else {
-            //分红基金份额
-            fhjjfe = 0.0;
-            //现金分红金额
-            xjfhje = fhje;
+        // 如果是前端收费,则计算购买数量
+        // 净申购金额＝申购金额/（1＋申购费率）
+        // 申购费用＝申购金额－净申购金额
+        // 申购份额＝净申购金额/T日申购价格
+        // 注：净申购金额及申购份额的计算结果以四舍五入的方法保留小数点后两位。
+        if((fundInsuranceType == 0)){
+            if("".equals(fundRate)){
+                values.put("fundRate", "0");
+            }else{
+                values.put("fundRate", fundRate);
+            }
+            Double jsgje = Double.parseDouble(buyMoney)/(1+Double.parseDouble(fundRate)/100);
+            Double sgfy = Double.parseDouble(buyMoney) - jsgje;
+            Double sgfe = jsgje/Double.parseDouble(buyPrice);
+            values.put("poundage",String.format("%.2f", sgfy));
+            values.put("buyAmount",String.format("%.2f", sgfe));
+            buyAmount = sgfe;
+        }else if(fundInsuranceType == 1){
+            Double hdsgfe = Double.parseDouble(buyMoney)/Double.parseDouble(buyPrice);
+            values.put("poundage","0");
+            values.put("buyAmount",String.format("%.2f", hdsgfe));
+            buyAmount = hdsgfe;
+            values.put("fundRate", "0");
         }
-        //初始化分红基金份额、现金分红金额
-        fundBonusAmount = fhjjfe;
-        fundBonusMoney = xjfhje;
-        values.put("bonusMoney",String.format("%.2f",xjfhje));
-        values.put("bonusAmount",String.format("%.2f",fhjjfe));
     }
 
     /**
@@ -425,11 +439,11 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
      * @return
      */
     public void queryHtml(String url){
-        pd = ProgressDialog.show(FundBonusActivity.this, "查询数据", "加载中，请稍后……");
+        pd = ProgressDialog.show(FundAddActivity.this, "查询数据", "加载中，请稍后……");
 
         //开启线程，连接主页，获取html，开始进行解析
-        FundBonusWebService fbws = new FundBonusWebService(url,handler);
-        new Thread(fbws).start();
+        FundRateWebService ss = new FundRateWebService(url,handler);
+        new Thread(ss).start();
     }
 
     /**
@@ -459,7 +473,7 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
      * 累计盈亏=基金累计赎回资金-累计购买资金+当前净值*持仓份额+累计现金分红
      * @return
      */
-    public ContentValues calcFundSumBonus(String fundCode,String price,String updown){
+    public ContentValues calcFundSum(String fundCode,String price,String updown){
         Double doublePrice = Double.parseDouble(price); //现价
         Double doubleUpdown = Double.parseDouble(updown); //涨跌
         Double buyAmountSum = 0.0; //基金持仓
@@ -482,13 +496,19 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
         //查询基金概览表是否有此基金
         Cursor fundSumCursor = sqliteDatabase.query("fund_sum", null,
                 "fundCode='"+fundCode+"'", null, null, null, null);
-        fundSumCursor.moveToFirst();
-        //计算基金本金、手续费、持仓
-        buyMoneySum = Double.parseDouble(fundSumCursor.getString(
-                fundSumCursor.getColumnIndex("buyMoneySum")));
-        //基金持仓=原持仓+红利转投份额
-        buyAmountSum = Double.parseDouble(fundSumCursor.getString(
-                fundSumCursor.getColumnIndex("fund_Position"))) + fundBonusAmount;
+        //如果有则更新数据，否则插入数据
+        if(fundSumCursor.getCount()!=0){
+            fundSumCursor.moveToFirst();
+            //计算基金本金、手续费、持仓
+            buyMoneySum = Double.parseDouble(fundSumCursor.getString(
+                    fundSumCursor.getColumnIndex("buyMoneySum"))) + Double.parseDouble(buyMoney);
+            buyAmountSum = Double.parseDouble(fundSumCursor.getString(
+                    fundSumCursor.getColumnIndex("fund_Position"))) + buyAmount;
+        }else {
+            //计算基金本金、手续费、持仓
+            buyMoneySum = Double.parseDouble(buyMoney);
+            buyAmountSum = buyAmount;
+        }
 
         Cursor fundRedeemCursor = sqliteDatabase.query("fund_redeem", new String[]{"redeemMoney"},
                 "fundCode='"+fundCode+"'", null, null, null, null);

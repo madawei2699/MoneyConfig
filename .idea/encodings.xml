@@ -4,7 +4,7 @@
     <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/MainActivity.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/database/DataService.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/database/DatabaseHelper.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/fund/AddFundActivity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/fund/FundAddActivity.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/fund/FundFragment.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/stock/StockFragment.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/MoneyConfig/src/main/java/com/mdw/moneyconfig/utils/InterceptScrollContainer.java" charset="UTF-8" />

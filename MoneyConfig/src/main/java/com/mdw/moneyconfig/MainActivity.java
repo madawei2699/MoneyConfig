@@ -13,10 +13,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mdw.moneyconfig.config.ConfigFragment;
 import com.mdw.moneyconfig.database.DataService;
-import com.mdw.moneyconfig.fund.AddFundActivity;
+import com.mdw.moneyconfig.fund.FundAddActivity;
 import com.mdw.moneyconfig.fund.FundFragment;
 import com.mdw.moneyconfig.proportion.ProportionFragment;
 import com.mdw.moneyconfig.stock.StockFragment;
@@ -72,6 +73,12 @@ public class MainActivity extends Activity {
         @Override
         public void handleMessage(android.os.Message msg) {
             switch (msg.what){
+                case Constant.NETWORKINVALID:
+                    pd.dismiss();
+                    Toast toast=Toast.makeText(MainActivity.this,
+                            getResources().getString(R.string.errorNetworkInvaild), Toast.LENGTH_SHORT);
+                    toast.show();
+                    break;
                 case Constant.DATASERVICEOK:
                     pd.dismiss();// 关闭ProgressDialog
                     // 第一次启动时选中基金tab
@@ -120,7 +127,7 @@ public class MainActivity extends Activity {
 				//通过获取titleText的值来判断addImage所处基金Fragment还是股票Fragment
 				if(titleText.getText().equals(getResources().getString(R.string.fund))){
 					Intent addFundIntent = new Intent();
-                    addFundIntent.setClass(MainActivity.this,AddFundActivity.class);
+                    addFundIntent.setClass(MainActivity.this,FundAddActivity.class);
                     startActivity(addFundIntent);
                     //finish();
 				}else if(titleText.getText().equals(getResources().getString(R.string.stock))){

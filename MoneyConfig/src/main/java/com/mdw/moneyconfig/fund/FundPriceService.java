@@ -66,15 +66,18 @@ public class FundPriceService implements Runnable {
     public void run() {
         if(handler != null){
             Message m = new Message();
-            Bundle b = new Bundle();
-            m.what = Constant.FUNDPRICEOK;
             if((!fundCode.equals(""))&&(!fundDate.equals(""))&& Utils.detectNetwork()){
+                m.what = Constant.FUNDPRICEOK;
+                Bundle b = new Bundle();
                 //基金代码不为空，则插入或更新基金数据
                 getAndStoreFundData(fundCode);
                 //查询基金历史净值
                 b.putString("jjjz",getFundPrice());
+                m.setData(b);
+            }else {
+                //网络不可用
+                m.what = Constant.NETWORKINVALID;
             }
-            m.setData(b);
             handler.sendMessage(m);// 执行耗时的方法之后发送消给handler
         }
     }

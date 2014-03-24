@@ -18,13 +18,13 @@ import java.io.IOException;
  *
  */
 
-public class SearchService implements Runnable {
+public class FundRateWebService implements Runnable {
 
     private Handler handler;
     // 查询数据地址
     private String url;
 
-    public SearchService(String url, Handler handler){
+    public FundRateWebService(String url, Handler handler){
         this.url = url;
         this.handler = handler;
     }
