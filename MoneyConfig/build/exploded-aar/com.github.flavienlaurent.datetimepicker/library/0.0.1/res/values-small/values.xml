@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/E:/dev/src/github/datetimepicker/datetimepicker-library/res/values-small/dimens.xml -->
+    <eat-comment />
+
+    <dimen name="date_picker_view_animator_height">190.0dip</dimen>
+    <dimen name="selected_calendar_layout_height">145.0dip</dimen>
+
+</resources>
