@@ -86,14 +86,23 @@ public class DataService implements Runnable {
 
     @Override
     public void run() {
-
+        Message m = new Message();
         if(!fundCode.equals("")){
     		//基金代码不为空，则插入或更新基金数据
-    		getAndStoreFundData(fundCode);
+    		if(getAndStoreFundData(fundCode)){
+                m.what = Constant.DATASERVICEOK;
+            }else {
+                m.what = Constant.NETWORKINVALID;
+            }
     	}else if(!stockCode.equals("")){
     		//股票代码不为空，则插入或更新基金数据
-    		getAndStoreStockData(stockCode);
+    		if(getAndStoreStockData(stockCode)){
+                m.what = Constant.DATASERVICEOK;
+            }else {
+                m.what = Constant.NETWORKINVALID;
+            }
     	}else if(updateOrNot){
+            m.what = Constant.DATASERVICEOK;
             SQLiteDatabase sqliteDatabase = dbHelper.getWritableDatabase();
             Cursor cursor = sqliteDatabase.rawQuery("select fundCode from fund_base", null);
             if(0!=cursor.getCount()){
@@ -106,13 +115,13 @@ public class DataService implements Runnable {
 //                    } catch (ParseException e) {
 //                        e.printStackTrace();
 //                    }
-                    getAndStoreFundData(cursor.getString(cursor.getColumnIndex("fundCode")));
+                    if(!getAndStoreFundData(cursor.getString(cursor.getColumnIndex("fundCode")))){
+                        m.what = Constant.NETWORKINVALID;
+                    }
                 }
             }
     	}
         if(handler != null){
-            Message m = new Message();
-            m.what = Constant.DATASERVICEOK;
             handler.sendMessage(m);// 执行耗时的方法之后发送消给handler
         }
 
@@ -198,7 +207,7 @@ public class DataService implements Runnable {
      * 获取并存储基金数据,如果code不为空且网络可用则发送http请求获取数据
      * @return
      */
-    public void getAndStoreFundData(String code){
+    public boolean getAndStoreFundData(String code){
     	if((!code.equals(""))&&Utils.detectNetwork()){
     		// 设置访问的Web站点
             String path = Utils.getPropertiesURL("url") + code;
@@ -206,10 +215,10 @@ public class DataService implements Runnable {
             Map<String, String> params = new HashMap<String, String>();
             String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
             //检查数据是否为空
-            String data = result.split("=")[1].replaceAll("\"", "").replaceAll(";", "").replaceAll("\\n","");
-            if(!data.equals(""))
+
+            if(!result.equals(""))
             {
-            	fundData = data.split(",");
+                fundData = result.split("=")[1].replaceAll("\"", "").replaceAll(";", "").replaceAll("\\n","").split(",");
 
                 // 向该对象中插入键值对，其中键是列名，值是希望插入到这一列的值，值必须和数据库当中的数据类型一致  
                 values.put("price", fundData[1]);
@@ -228,14 +237,16 @@ public class DataService implements Runnable {
                 	sqliteDatabase.update("fund_base", values, "fundCode="+"'"+code+"'", null);
                 }
                 sqliteDatabase.close();
+                return true;
             }
     	}
+        return false;
     }
     /**
      * 获取并存储股票数据
      * @return
      */
-    public void getAndStoreStockData(String code){
-    	
+    public boolean getAndStoreStockData(String code){
+    	return false;
     }
 }
