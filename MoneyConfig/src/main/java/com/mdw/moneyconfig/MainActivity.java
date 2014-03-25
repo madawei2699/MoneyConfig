@@ -75,6 +75,7 @@ public class MainActivity extends Activity {
             switch (msg.what){
                 case Constant.NETWORKINVALID:
                     pd.dismiss();
+                    setTabSelection(0);
                     Toast toast=Toast.makeText(MainActivity.this,
                             getResources().getString(R.string.errorNetworkInvaild), Toast.LENGTH_SHORT);
                     toast.show();
