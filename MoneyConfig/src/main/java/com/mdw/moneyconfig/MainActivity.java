@@ -79,6 +79,12 @@ public class MainActivity extends Activity {
                             getResources().getString(R.string.errorNetworkInvaild), Toast.LENGTH_SHORT);
                     toast.show();
                     break;
+                case Constant.INPUTISNULL:
+                    pd.dismiss();
+                    Toast toast2=Toast.makeText(MainActivity.this,
+                            getResources().getString(R.string.errorInputIsNull), Toast.LENGTH_SHORT);
+                    toast2.show();
+                    break;
                 case Constant.DATASERVICEOK:
                     pd.dismiss();// 关闭ProgressDialog
                     // 第一次启动时选中基金tab

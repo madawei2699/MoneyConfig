@@ -96,5 +96,7 @@
     <string name="errorNetworkInvaild">网络不可用,请打开网络或稍后再试!</string>
     <string name="fastAdd">快速添加</string>
     <string name="titleFundAdd">-快速添加</string>
+    <string name="errorFundMoney">基金金额未填写!</string>
+    <string name="errorInputIsNull">输入为空,请输入所有必填项!</string>
 
 </resources>

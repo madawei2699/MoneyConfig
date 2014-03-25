@@ -22,5 +22,7 @@ public class Constant {
     public static final int FUNDPRICEOK = 2;
     // 网络不可用
     public static final int NETWORKINVALID = 3;
+    // 输入为空
+    public static final int INPUTISNULL = 4;
 
 }

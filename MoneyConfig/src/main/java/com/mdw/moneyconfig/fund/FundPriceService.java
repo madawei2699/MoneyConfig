@@ -66,17 +66,22 @@ public class FundPriceService implements Runnable {
     public void run() {
         if(handler != null){
             Message m = new Message();
-            if((!fundCode.equals(""))&&(!fundDate.equals(""))&& Utils.detectNetwork()){
-                m.what = Constant.FUNDPRICEOK;
-                Bundle b = new Bundle();
-                //基金代码不为空，则插入或更新基金数据
-                getAndStoreFundData(fundCode);
-                //查询基金历史净值
-                b.putString("jjjz",getFundPrice());
-                m.setData(b);
+            //基金代码不为空，则插入或更新基金数据
+            if((!fundCode.equals(""))&&(!fundDate.equals(""))){
+                String jjjz = getFundPrice();
+                if(!jjjz.equals("")&&getAndStoreFundData(fundCode)){
+                    m.what = Constant.FUNDPRICEOK;
+                    //查询基金历史净值
+                    Bundle b = new Bundle();
+                    b.putString("jjjz",jjjz);
+                    m.setData(b);
+                }else {
+                    //网络不可用
+                    m.what = Constant.NETWORKINVALID;
+                }
             }else {
-                //网络不可用
-                m.what = Constant.NETWORKINVALID;
+                //输入为空
+                m.what = Constant.INPUTISNULL;
             }
             handler.sendMessage(m);// 执行耗时的方法之后发送消给handler
         }
@@ -164,19 +169,17 @@ public class FundPriceService implements Runnable {
      * 获取并存储基金数据,如果code不为空且网络可用则发送http请求获取数据
      * @return
      */
-    public void getAndStoreFundData(String code){
-        if((!code.equals(""))&&Utils.detectNetwork()){
+    public boolean getAndStoreFundData(String code){
+        if(Utils.detectNetwork()){
             // 设置访问的Web站点
             String path = Utils.getPropertiesURL("url") + code;
             //设置Http请求参数
             Map<String, String> params = new HashMap<String, String>();
             String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
             //检查数据是否为空
-            String data = result.split("=")[1].replaceAll("\"", "").replaceAll(";", "").replaceAll("\\n","");
-            if(!data.equals(""))
+            if(!result.equals(""))
             {
-                fundData = data.split(",");
-
+                fundData = result.split("=")[1].replaceAll("\"", "").replaceAll(";", "").replaceAll("\\n","").split(",");
                 // 向该对象中插入键值对，其中键是列名，值是希望插入到这一列的值，值必须和数据库当中的数据类型一致
                 values.put("price", fundData[1]);
                 // 保留四位小数
@@ -199,8 +202,10 @@ public class FundPriceService implements Runnable {
                     sqliteDatabase.insert("fund_base",null,values);
                 }
                 sqliteDatabase.close();
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -213,20 +218,24 @@ public class FundPriceService implements Runnable {
         String path = Utils.getPropertiesURL("SearchPriceByDate").replaceAll("fundCode",fundCode.replace("of","")).replaceAll("fundDate",fundDate);
         //设置Http请求参数
         Map<String, String> params = new HashMap<String, String>();
-        String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
-        //解析JSON格式数据并检查数据是否为空
-        JSONObject jo = null;
-        try {
-            jo = new JSONObject(result.replaceAll("\"","\\\""));
-            JSONObject jo_result = (JSONObject)jo.get("result");
-            JSONObject jo_data = (JSONObject)jo_result.get("data");
-            if(jo_data.get("total_num").toString().equals("1")){
-                JSONArray ja_data = (JSONArray) jo_data.get("data");
-                JSONObject o = (JSONObject)ja_data.get(0);
-                jjjz = o.getString("jjjz");
+        if(Utils.detectNetwork()) {
+            String result = sendHttpClientPost(path, params, Utils.getPropertiesURL("encode"));
+            if(!result.equals("")){
+                //解析JSON格式数据并检查数据是否为空
+                JSONObject jo = null;
+                try {
+                    jo = new JSONObject(result.replaceAll("\"", "\\\""));
+                    JSONObject jo_result = (JSONObject) jo.get("result");
+                    JSONObject jo_data = (JSONObject) jo_result.get("data");
+                    if (jo_data.get("total_num").toString().equals("1")) {
+                        JSONArray ja_data = (JSONArray) jo_data.get("data");
+                        JSONObject o = (JSONObject) ja_data.get(0);
+                        jjjz = o.getString("jjjz");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return jjjz;
     }

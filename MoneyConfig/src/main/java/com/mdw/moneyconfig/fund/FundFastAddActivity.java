@@ -131,6 +131,12 @@ public class FundFastAddActivity extends FragmentActivity implements OnDateSetLi
                             getResources().getString(R.string.errorNetworkInvaild), Toast.LENGTH_SHORT);
                     toast1.show();
                     break;
+                case Constant.INPUTISNULL:
+                    pd.dismiss();
+                    Toast toast2=Toast.makeText(FundFastAddActivity.this,
+                            getResources().getString(R.string.errorInputIsNull), Toast.LENGTH_SHORT);
+                    toast2.show();
+                    break;
                 case Constant.SEARCHSERVICEOK:
                     pd.dismiss();// 关闭ProgressDialog
                     // 给webview展示内容
@@ -381,6 +387,13 @@ public class FundFastAddActivity extends FragmentActivity implements OnDateSetLi
                 getEditValue();
                 // 用正则表达式判断输入基金代码是否正确
                 if(fundCode.matches("^of\\d{6,6}")){
+                    if(buyMoney.equals("")){
+                        //提示基金金额不能为空
+                        Toast toast=Toast.makeText(FundFastAddActivity.this,
+                                getResources().getString(R.string.errorFundMoney), Toast.LENGTH_SHORT);
+                        toast.show();
+                        break;
+                    }
                     if(fundRate.equals("")){
                         //提示基金费率不能为空
                         Toast toast=Toast.makeText(FundFastAddActivity.this,

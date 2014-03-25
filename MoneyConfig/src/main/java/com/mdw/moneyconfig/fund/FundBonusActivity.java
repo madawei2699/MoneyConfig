@@ -137,6 +137,12 @@ public class FundBonusActivity extends FragmentActivity implements OnDateSetList
                             getResources().getString(R.string.errorNetworkInvaild), Toast.LENGTH_SHORT);
                     toast1.show();
                     break;
+                case Constant.INPUTISNULL:
+                    pd.dismiss();
+                    Toast toast2=Toast.makeText(FundBonusActivity.this,
+                            getResources().getString(R.string.errorInputIsNull), Toast.LENGTH_SHORT);
+                    toast2.show();
+                    break;
                 case Constant.SEARCHSERVICEOK:
                     pd.dismiss();// 关闭ProgressDialog
                     // 给webview展示内容
