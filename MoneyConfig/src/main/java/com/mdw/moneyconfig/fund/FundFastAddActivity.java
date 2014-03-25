@@ -181,7 +181,7 @@ public class FundFastAddActivity extends FragmentActivity implements OnDateSetLi
                         // 打开对话框提示用户是否继续添加
                         AlertDialog.Builder builder = new AlertDialog.Builder(FundFastAddActivity.this);
                         builder//给builder set各种属性值
-                                .setMessage(getString(R.string.alert_dialog_message))
+                                .setMessage(getString(R.string.alert_dialog_message_fastadd))
                                 .setPositiveButton("继续添加", new DialogInterface.OnClickListener() {//确定按钮
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
